@@ -33,7 +33,7 @@ namespace GraphView
 
             foreach (var node in editorGraph.GetNodes())
             {
-                if (node is StartNode || node is EndNode) continue;
+                if (node is StartNode or EndNode) continue;
                 
                 var runtimeNode = new RuntimeDialogueNode {DialogueNodeID = nodeIdMap[node]};
                 if (node is DialogueNode dialogueNode)
@@ -41,7 +41,7 @@ namespace GraphView
                     ProcessDialogueNode(dialogueNode, runtimeNode, nodeIdMap);
                 }else if (node is ChoiceNode choiceNode)
                 {
-                    ProsessChoiceNode(choiceNode, runtimeNode, nodeIdMap);
+                    ProcessChoiceNode(choiceNode, runtimeNode, nodeIdMap);
                 }
                 
                 runtimeGraph.AllNodes.Add(runtimeNode);
@@ -62,30 +62,49 @@ namespace GraphView
                 runtimeNode.NextDialogueNodeID = nodeIdMap[nextNodePort.GetNode()];
         }
 
-        private void ProsessChoiceNode(ChoiceNode node, RuntimeDialogueNode runtimeNode,
+        private void ProcessChoiceNode(ChoiceNode node, RuntimeDialogueNode runtimeNode,
             Dictionary<INode, string> nodeIdMap)
         {
             runtimeNode.SpeakerName = GetPortValue<string>(node.GetInputPortByName("Speaker"));
-            runtimeNode.SpeakerName = GetPortValue<string>(node.GetInputPortByName("Dialogue"));
-            
-            var ChoiceOuputPort = node.GetOutputPorts().Where(p => p.name.StartsWith("Choice "));
+            runtimeNode.DialogueText = GetPortValue<string>(node.GetInputPortByName("Dialogue"));
 
-            foreach (var outputPort in ChoiceOuputPort)
+            var choiceOutputPorts = node.GetOutputPorts().Where(p => p.name.StartsWith("choice_"));
+
+            foreach (var outputPort in choiceOutputPorts)
             {
-                var index = outputPort.name.Substring("Choice ".Length);
-                var textPort = node.GetInputPortByName($"Choice Text {index}");
-
-                var ChoiceData = new ChoiceData
+                var indexStr = outputPort.name.Substring("choice_".Length);
+                if (!int.TryParse(indexStr, out int index))
                 {
-                    ChoiceText = GetPortValue<string>(textPort),
+                    Debug.LogWarning($"Impossible de parser index pour le port {outputPort.name}");
+                    continue;
+                }
+
+                // Récupère le texte via l'option correspondante
+                var textOpt = node.GetNodeOptionByName($"choiceText_{index}");
+                string choiceText = null;
+                if (textOpt != null)
+                    textOpt.TryGetValue(out choiceText);
+
+                // Récupère le ConditionsSC via l'option correspondante
+                var condOpt = node.GetNodeOptionByName($"choiceCond_{index}");
+                ConditionsSC condition = null;
+                if (condOpt != null)
+                    condOpt.TryGetValue(out condition);
+
+                var choiceData = new ChoiceData
+                {
+                    ChoiceText = choiceText,
+                    // Optionnel : stocker la condition dans ChoiceData
+                    Condition = condition,
                     DestinationNodeID = outputPort.firstConnectedPort != null
                         ? nodeIdMap[outputPort.firstConnectedPort.GetNode()]
                         : null
                 };
-                
-                runtimeNode.Choices.Add(ChoiceData);
+
+                runtimeNode.Choices.Add(choiceData);
             }
         }
+
         
         private T GetPortValue<T>(IPort port)
         {
