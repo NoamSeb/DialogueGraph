@@ -1,0 +1,115 @@
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+
+namespace GraphView
+{
+    public class DialogueManager : MonoBehaviour
+    {
+        public RuntimeDialogueGraph  runtimeGraph;
+        
+        [Header("UI Elements")]
+        public GameObject dialoguePanel;
+        public TextMeshProUGUI SpeakerNameText;
+        public TextMeshProUGUI DialogueText;
+        
+        [Header("Choice Button UI")]
+        public Button ChoiceButtonPrefab;
+        public Transform ChoiceButtonContainer;
+        
+        private Dictionary<string, RuntimeDialogueNode> _nodeLookup = new Dictionary<string, RuntimeDialogueNode>();
+        private RuntimeDialogueNode _currentNode;
+
+        private void Start()
+        {
+            foreach (var node in runtimeGraph.AllNodes)
+            {
+                _nodeLookup[node.DialogueNodeID] = node;
+            }
+
+            if (!string.IsNullOrEmpty(runtimeGraph.EntryNodeID))
+            {
+                ShowNode(runtimeGraph.EntryNodeID);
+            }
+            else
+            {
+                EndDialogue();
+            }
+        }
+
+        private void Update()
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame && _currentNode != null && _currentNode.Choices.Count == 0)
+            {
+                if (!string.IsNullOrEmpty(_currentNode.NextDialogueNodeID))
+                {
+                    ShowNode(_currentNode.NextDialogueNodeID);
+                }
+                else
+                {
+                    EndDialogue();
+                }
+            }
+        }
+        
+        private void ShowNode(string nodeID)
+        {
+            if (!_nodeLookup.ContainsKey(nodeID))
+            {
+                EndDialogue();
+                return;
+            }
+            
+            _currentNode = _nodeLookup[nodeID];
+            
+            dialoguePanel.SetActive(true);
+            SpeakerNameText.SetText(_currentNode.SpeakerName);
+            DialogueText.SetText(_currentNode.DialogueText);
+
+            foreach (Transform child in ChoiceButtonContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            if (_currentNode.Choices.Count > 0)
+            {
+                foreach (ChoiceData choice in _currentNode.Choices)
+                {
+                    Button choiceButton = Instantiate(ChoiceButtonPrefab, ChoiceButtonContainer);
+                    
+                    TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
+                    if (choiceText != null)
+                    {
+                        choiceText.text = choice.ChoiceText;
+                    }
+
+                    if (choiceButton != null)
+                    {
+                        choiceButton.onClick.AddListener(() =>
+                        {
+                            if (!string.IsNullOrEmpty(choice.DestinationNodeID))
+                                ShowNode(choice.DestinationNodeID);
+                            else
+                            {
+                                EndDialogue();
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        
+        private void EndDialogue()
+        {
+            dialoguePanel.SetActive(false);
+            _currentNode = null;
+            
+            foreach (Transform child in ChoiceButtonContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+}
