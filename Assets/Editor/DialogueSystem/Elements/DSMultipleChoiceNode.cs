@@ -70,12 +70,18 @@ using UnityEngine.UIElements;
                 _statedNodeField.value = "Node Type: Single Choice";
                 _changeNodeType.RemoveFromClassList("ds-node__buttonSingle");
                 _changeNodeType.AddToClassList("ds-node__buttonMultiple");
-                mainContainer.Remove(_addChoiceButton);
+                if (mainContainer.Contains(_addChoiceButton))
+                {
+                    mainContainer.Remove(_addChoiceButton);
+                }
             }
         }
         private void SwitchNodeType()
         {
             ClearChoicePorts();
+            
+            _isMultipleChoice = !_isMultipleChoice;
+
             
             if (_isMultipleChoice) 
                 CreateSingleChoicePort("New choice", true);
@@ -84,7 +90,6 @@ using UnityEngine.UIElements;
             
             SetNodeType(_isMultipleChoice);
 
-            _isMultipleChoice = !_isMultipleChoice;
 
             RefreshExpandedState();
 
