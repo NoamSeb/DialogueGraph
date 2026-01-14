@@ -9,6 +9,8 @@
 	--ds-colors-window-dark-grey-4: #232527;
 	--ds-colors-window-dark-grey-5: #252729;
 	--ds-colors-window-dark-grey-6: #27292C;
+	--ds-colors-window-dark-grey-7: #e6757f;
+	--ds-colors-window-dark-grey-8: #429ad8;
 	--ds-colors-window-yellow: #FDD057;
 
 	--ds-metrics-grid-25: 25;

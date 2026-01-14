@@ -169,6 +169,7 @@ namespace DS.Elements
         public void SetErrorStyle(Color color)
         {
             mainContainer.style.backgroundColor = color;
+            Debug.Log("Set error style on node: " + DialogueName);
         }
 
         public void ResetStyle()

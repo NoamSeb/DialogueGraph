@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+
 
 namespace DS.Elements
 {
@@ -13,6 +15,14 @@ namespace DS.Elements
 
     public class DSMultipleChoiceNode : DSNode
     {
+        
+        private Button _addChoiceButton;
+        private Button _changeNodeType;
+        private TextField _statedNodeField;
+        private bool _isMultipleChoice = false;
+        private List<Port> _choicePorts = new List<Port>();
+        
+
         public override void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
         {
             base.Initialize(nodeName, dsGraphView, position);
@@ -27,13 +37,73 @@ namespace DS.Elements
             Choices.Add(choiceData);
         }
 
+        private void ClearChoicePorts()
+        {
+            Choices.Clear(); 
+            foreach (Port port in _choicePorts)
+            {
+                if (port.connected)
+                {
+                    graphView.DeleteElements(port.connections);
+                }
+
+                graphView.RemoveElement(port);
+            }
+            
+            _choicePorts.Clear();
+        }
+        
+        private void CreateSingleChoicePort(string text, bool canBeDeleted)
+        {
+            DSChoiceSaveData choiceData = new DSChoiceSaveData()
+            {
+                Text = text,
+            };
+
+            Choices.Add(choiceData);
+            Port choicePort = CreateChoicePort(choiceData, canBeDeleted);
+            outputContainer.Add(choicePort);
+        }
+
+        private void SwitchNodeType()
+        {
+            ClearChoicePorts();
+            
+            if (_isMultipleChoice)
+            {
+                _changeNodeType.RemoveFromClassList("ds-node__buttonMultiple");
+                _changeNodeType.AddToClassList("ds-node__buttonSingle");
+                mainContainer.Add(_addChoiceButton);
+                _statedNodeField.value = "Node Type: Multiple Choice";
+                CreateSingleChoicePort("New choice", true);
+            }
+            else
+            {
+                _statedNodeField.value = "Node Type: Single Choice";
+                _changeNodeType.RemoveFromClassList("ds-node__buttonSingle");
+                _changeNodeType.AddToClassList("ds-node__buttonMultiple");
+                mainContainer.Remove(_addChoiceButton);
+                
+                CreateSingleChoicePort("Continue", false);
+            }
+            
+            _isMultipleChoice = !_isMultipleChoice;
+        }
+
         public override void Draw()
         {
             base.Draw();
-
+            
+            // TOP LEVEL CONTAINERS
+            
+            _statedNodeField = DSElementUtility.CreateTextField("Node Type", null);
+            
+            titleContainer.Add(_statedNodeField);
+            
+            
             /* MAIN CONTAINER */
 
-            Button addChoiceButton = DSElementUtility.CreateButton("Add Choice", () =>
+            _addChoiceButton = DSElementUtility.CreateButton("Add Choice", () =>
             {
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
@@ -41,20 +111,21 @@ namespace DS.Elements
                 };
 
                 Choices.Add(choiceData);
-
                 Port choicePort = CreateChoicePort(choiceData);
-
                 outputContainer.Add(choicePort);
             });
             
-            Button changeNodeType = DSElementUtility.CreateButton("Switch node Type", () =>
+            _changeNodeType = DSElementUtility.CreateButton("Switch node Type", () =>
             {
-                
+                SwitchNodeType();
             });
-
-            addChoiceButton.AddToClassList("ds-node__button");
-
-            mainContainer.Insert(1, addChoiceButton);
+            
+            mainContainer.Add(_changeNodeType);
+            
+            mainContainer.Add(_addChoiceButton);
+            
+            _changeNodeType.AddToClassList("ds-node__buttonSingle");
+            _addChoiceButton.AddToClassList("ds-node__button");
 
             /* OUTPUT CONTAINER */
 
@@ -68,7 +139,7 @@ namespace DS.Elements
             RefreshExpandedState();
         }
 
-        private Port CreateChoicePort(object userData)
+        private Port CreateChoicePort(object userData, bool canBeDeleted = true)
         {
             Port choicePort = this.CreatePort();
 
@@ -76,38 +147,46 @@ namespace DS.Elements
 
             DSChoiceSaveData choiceData = (DSChoiceSaveData) userData;
 
-            Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
+            if (canBeDeleted)
             {
-                if (Choices.Count == 1)
+                Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
                 {
-                    return;
-                }
+                    if (Choices.Count == 1)
+                    {
+                        return;
+                    }
 
-                if (choicePort.connected)
-                {
-                    graphView.DeleteElements(choicePort.connections);
-                }
+                    if (choicePort.connected)
+                    {
+                        graphView.DeleteElements(choicePort.connections);
+                    }
 
-                Choices.Remove(choiceData);
+                    Choices.Remove(choiceData);
+                    graphView.RemoveElement(choicePort);
+                
+                });
+                
+                deleteChoiceButton.AddToClassList("ds-node__button");
+                choicePort.Add(deleteChoiceButton);
 
-                graphView.RemoveElement(choicePort);
-            });
-
-            deleteChoiceButton.AddToClassList("ds-node__button");
+            }
+            
 
             TextField choiceTextField = DSElementUtility.CreateTextField(choiceData.Text, null, callback =>
             {
                 choiceData.Text = callback.newValue;
             });
 
-            choiceTextField.AddClasses(
+            choiceTextField.AddClasses
+            (
                 "ds-node__text-field",
                 "ds-node__text-field__hidden",
                 "ds-node__choice-text-field"
             );
 
             choicePort.Add(choiceTextField);
-            choicePort.Add(deleteChoiceButton);
+            
+            _choicePorts.Add(choicePort);
 
             return choicePort;
         }

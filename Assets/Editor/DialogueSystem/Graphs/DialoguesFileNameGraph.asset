@@ -15,17 +15,31 @@ MonoBehaviour:
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
   <Nodes>k__BackingField:
-  - <ID>k__BackingField: 02157ad0-e7bf-4612-be25-ef49358ed432
-    <Name>k__BackingField: DialogueName
+  - <ID>k__BackingField: b2eba59c-3f14-4bb8-b3e0-c802efcaf682
+    <Name>k__BackingField: HIHI
     <Text>k__BackingField: Dialogue text.
     <Choices>k__BackingField:
     - <Text>k__BackingField: New Choice
       <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <NodeID>k__BackingField: 
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 1
-    <Position>k__BackingField: {x: 409.33334, y: 328}
+    <Position>k__BackingField: {x: 955.3333, y: 350.66666}
+  - <ID>k__BackingField: b7459bbf-deb8-42e8-bd89-3fc675aed520
+    <Name>k__BackingField: Salut
+    <Text>k__BackingField: Dialogue text.
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: Continue
+      <NodeID>k__BackingField: b2eba59c-3f14-4bb8-b3e0-c802efcaf682
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 432, y: 350.66666}
   <OldGroupNames>k__BackingField: []
   <OldUngroupedNodeNames>k__BackingField:
-  - DialogueName
+  - HIHI
+  - Salut
   <OldGroupedNodeNames>k__BackingField:
     list: []
