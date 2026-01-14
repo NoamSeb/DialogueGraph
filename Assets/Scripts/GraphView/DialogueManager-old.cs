@@ -19,6 +19,9 @@ namespace GraphView
         public Button ChoiceButtonPrefab;
         public Transform ChoiceButtonContainer;
         
+        public Speakers SpeakersScriptable;
+        private SpeakerInfo _currentSpeaker;
+        
         private Dictionary<string, RuntimeDialogueNode> _nodeLookup = new Dictionary<string, RuntimeDialogueNode>();
         private RuntimeDialogueNode _currentNode;
 
@@ -65,7 +68,10 @@ namespace GraphView
             _currentNode = _nodeLookup[nodeID];
             
             dialoguePanel.SetActive(true);
-            SpeakerNameText.SetText(_currentNode.SpeakerName);
+            //SpeakerNameText.SetText(_currentNode.SpeakerName);
+            print(_currentNode.speaker);
+            ChangeSpeaker(_currentNode.speaker);
+            
             DialogueText.SetText(_currentNode.DialogueText);
 
             foreach (Transform child in ChoiceButtonContainer)
@@ -113,5 +119,24 @@ namespace GraphView
                 Destroy(child.gameObject);
             }
         }
+        
+        public void ChangeSpeaker(Espeaker speak)
+        {
+            foreach (var speaker in SpeakersScriptable.speakers)
+            {
+                if (speaker.speakEnum == speak)
+                {
+                    SetNewSpeaker(speaker);
+                }
+            }
+        }
+
+        private void SetNewSpeaker(SpeakerInfo speaker)
+        {
+            _currentSpeaker = speaker;
+            SpeakerNameText.SetText(_currentSpeaker.Name);
+            print(_currentSpeaker.Name);
+        }
     }
 }
+

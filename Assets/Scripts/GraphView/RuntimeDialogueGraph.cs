@@ -15,7 +15,7 @@ namespace GraphView
     public class RuntimeDialogueNode
     {
         public string DialogueNodeID;
-        public string SpeakerName;
+        public Espeaker speaker;
         public string DialogueText;
         public List<ChoiceData> Choices = new List<ChoiceData>();
         public string NextDialogueNodeID;
