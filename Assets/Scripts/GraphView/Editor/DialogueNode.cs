@@ -30,6 +30,7 @@ namespace GraphView
             context.AddOutputPort("out").Build();
             
             context.AddInputPort<string>("Speaker").Build();
+            context.AddInputPort<Espeaker>("ESpeaker").Build();
             context.AddInputPort<string>("Dialogue").Build();
         }
     }
@@ -44,6 +45,7 @@ namespace GraphView
             context.AddInputPort("in").Build();
             
             context.AddInputPort<string>("Speaker").Build();
+            context.AddInputPort<Espeaker>("ESpeaker").Build();
             context.AddInputPort<string>("Dialogue").Build();
             
             var option = GetNodeOptionByName(optionID);

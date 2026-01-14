@@ -59,10 +59,10 @@ MonoBehaviour:
         m_LocalSubgraphs: []
         m_LastKnownBounds:
           serializedVersion: 2
-          x: 456.66666
-          y: 370
-          width: 1285.3334
-          height: 324
+          x: 456.80002
+          y: 370.4
+          width: 1285.5999
+          height: 322.4
         m_GraphElementMetaData:
         - m_Guid:
             m_Value0: 15061494105187285417
@@ -371,9 +371,11 @@ MonoBehaviour:
           m_KeyList:
           - Speaker
           - Dialogue
+          - ESpeaker
           m_ValueList:
-          - rid: 731774769139548431
+          - rid: 1955111220323549378
           - rid: 731774769139548432
+          - rid: 1955111220323549379
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -421,10 +423,6 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
-    - rid: 731774769139548431
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
     - rid: 731774769139548432
       type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -588,12 +586,14 @@ MonoBehaviour:
           - Choice Text 0
           - Choice Text 1
           - Dialogue
+          - ESpeaker
           m_ValueList:
           - rid: 731774773912666263
           - rid: 731774773912666264
           - rid: 731774773912666265
           - rid: 731774773912666266
           - rid: 731774773912666287
+          - rid: 1955111220323549380
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -744,9 +744,11 @@ MonoBehaviour:
           m_KeyList:
           - Speaker
           - Dialogue
+          - ESpeaker
           m_ValueList:
-          - rid: 731774773912666278
+          - rid: 1955111220323549381
           - rid: 731774773912666279
+          - rid: 1955111220323549382
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -831,10 +833,6 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: Speaker
-    - rid: 731774773912666278
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
     - rid: 731774773912666279
       type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -947,3 +945,44 @@ MonoBehaviour:
       type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
         m_Value: What you want to answer ?
+    - rid: 1955111220323549378
+      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 
+    - rid: 1955111220323549379
+      type: {class: EnumConstant, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value:
+          m_EnumType:
+            m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
+          m_Value: 1
+        m_EnumType:
+          m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+    - rid: 1955111220323549380
+      type: {class: EnumConstant, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value:
+          m_EnumType:
+            m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
+          m_Value: 0
+        m_EnumType:
+          m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+    - rid: 1955111220323549381
+      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value: 
+    - rid: 1955111220323549382
+      type: {class: EnumConstant, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
+      data:
+        m_Value:
+          m_EnumType:
+            m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
+          m_Value: 0
+        m_EnumType:
+          m_Identification: Espeaker, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
