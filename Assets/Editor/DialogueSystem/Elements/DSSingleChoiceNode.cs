@@ -1,12 +1,6 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace DS.Elements
-{
-    using Data.Save;
-    using Enumerations;
-    using Utilities;
-    using Windows;
 
     public class DSSingleChoiceNode : DSNode
     {
@@ -42,4 +36,3 @@ namespace DS.Elements
             RefreshExpandedState();
         }
     }
-}

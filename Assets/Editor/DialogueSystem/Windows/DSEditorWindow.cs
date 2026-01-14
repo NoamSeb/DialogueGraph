@@ -3,10 +3,8 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace DS.Windows
-{
+
     using System;
-    using Utilities;
 
     public class DSEditorWindow : EditorWindow
     {
@@ -137,4 +135,3 @@ namespace DS.Windows
             saveButton.SetEnabled(false);
         }
     }
-}

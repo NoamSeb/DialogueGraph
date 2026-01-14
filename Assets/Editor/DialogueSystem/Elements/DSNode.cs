@@ -5,17 +5,13 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DS.Elements
-{
-    using Data.Save;
-    using Enumerations;
-    using Utilities;
-    using Windows;
 
     public class DSNode : Node
     {
         public string ID { get; set; }
         public string DialogueName { get; set; }
+        
+        public Espeaker Speaker { get; set; }
         public List<DSChoiceSaveData> Choices { get; set; }
         public string Text { get; set; }
         public DSDialogueType DialogueType { get; set; }
@@ -101,6 +97,12 @@ namespace DS.Elements
             );
 
             titleContainer.Insert(0, dialogueNameTextField);
+            
+            // DRAW ENUMERATOR ESPEAKER 
+            
+            EnumField speakerEnumField = new EnumField("", Speaker);
+            
+            titleContainer.Add(speakerEnumField);
 
             /* INPUT CONTAINER */
 
@@ -177,4 +179,3 @@ namespace DS.Elements
             mainContainer.style.backgroundColor = defaultBackgroundColor;
         }
     }
-}

@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DS.Data.Save
-{
-    using Enumerations;
 
     [Serializable]
     public class DSNodeSaveData
@@ -19,4 +16,3 @@ namespace DS.Data.Save
         [field: SerializeField] public Vector2 Position { get; set; }
         [field: SerializeField] public string NextDialogueNodeID { get; set; }
     }
-}

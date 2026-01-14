@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace DS.Data.Error
-{
+
     public class DSErrorData
     {
         public Color Color { get; set; }
@@ -21,4 +20,3 @@ namespace DS.Data.Error
             );
         }
     }
-}

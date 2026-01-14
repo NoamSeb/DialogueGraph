@@ -1,17 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DS.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
-namespace DS.Utilities
-{
-    using Data;
-    using Data.Save;
-    using Elements;
-    using ScriptableObjects;
-    using Windows;
 
     public static class DSIOUtility
     {
@@ -478,4 +471,3 @@ namespace DS.Utilities
             return choices;
         }
     }
-}

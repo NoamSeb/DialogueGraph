@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DS.ScriptableObjects
-{
+
     public class DSDialogueContainerSO : ScriptableObject
     {
         [field: SerializeField] public string FileName { get; set; }
@@ -65,4 +64,3 @@ namespace DS.ScriptableObjects
             return ungroupedDialogueNames;
         }
     }
-}

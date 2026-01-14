@@ -4,15 +4,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-namespace DS.Elements
-{
-    using Data.Save;
-    using Enumerations;
-    using Utilities;
-    using Windows;
-    
-    
-
     public class DSMultipleChoiceNode : DSNode
     {
         
@@ -64,18 +55,15 @@ namespace DS.Elements
             Port choicePort = CreateChoicePort(choiceData, canBeDeleted);
             outputContainer.Add(choicePort);
         }
-
-        private void SwitchNodeType()
+        
+        public void SetNodeType(bool isMultipleChoice)
         {
-            ClearChoicePorts();
-            
             if (_isMultipleChoice)
             {
                 _changeNodeType.RemoveFromClassList("ds-node__buttonMultiple");
                 _changeNodeType.AddToClassList("ds-node__buttonSingle");
-                mainContainer.Add(_addChoiceButton);
                 _statedNodeField.value = "Node Type: Multiple Choice";
-                CreateSingleChoicePort("New choice", true);
+                mainContainer.Add(_addChoiceButton);
             }
             else
             {
@@ -83,11 +71,23 @@ namespace DS.Elements
                 _changeNodeType.RemoveFromClassList("ds-node__buttonSingle");
                 _changeNodeType.AddToClassList("ds-node__buttonMultiple");
                 mainContainer.Remove(_addChoiceButton);
-                
-                CreateSingleChoicePort("Continue", false);
             }
+        }
+        private void SwitchNodeType()
+        {
+            ClearChoicePorts();
             
+            if (_isMultipleChoice) 
+                CreateSingleChoicePort("New choice", true);
+            else
+                CreateSingleChoicePort("Continue", false);
+            
+            SetNodeType(_isMultipleChoice);
+
             _isMultipleChoice = !_isMultipleChoice;
+
+            RefreshExpandedState();
+
         }
 
         public override void Draw()
@@ -132,11 +132,13 @@ namespace DS.Elements
             foreach (DSChoiceSaveData choice in Choices)
             {
                 Port choicePort = CreateChoicePort(choice);
-
                 outputContainer.Add(choicePort);
             }
-
+            
+            SetNodeType(_isMultipleChoice);
+            
             RefreshExpandedState();
+            
         }
 
         private Port CreateChoicePort(object userData, bool canBeDeleted = true)
@@ -191,4 +193,3 @@ namespace DS.Elements
             return choicePort;
         }
     }
-}

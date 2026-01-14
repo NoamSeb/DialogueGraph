@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DS.Data.Save
-{
+
     public class DSGraphSaveDataSO : ScriptableObject
     {
         [field: SerializeField] public string FileName { get; set; }
@@ -20,4 +19,3 @@ namespace DS.Data.Save
             Nodes = new List<DSNodeSaveData>();
         }
     }
-}

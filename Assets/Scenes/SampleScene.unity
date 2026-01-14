@@ -964,7 +964,7 @@ MonoBehaviour:
   DialogueText: {fileID: 61481419}
   ChoiceButtonPrefab: {fileID: 2450449145640451282, guid: c6be6b860c1e579488ac056eb4093aee, type: 3}
   ChoiceButtonContainer: {fileID: 1927992912}
-  SpeakersScriptable: {fileID: 11400000, guid: 82e282dbd1d6b8c4d845bae0b97efb89, type: 2}
+  SpeakersScriptable: {fileID: 0}
 --- !u!1 &1927992911
 GameObject:
   m_ObjectHideFlags: 0

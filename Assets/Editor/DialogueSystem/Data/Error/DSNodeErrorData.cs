@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 
-namespace DS.Data.Error
-{
-    using Elements;
+
 
     public class DSNodeErrorData
     {
@@ -15,4 +13,3 @@ namespace DS.Data.Error
             Nodes = new List<DSNode>();
         }
     }
-}

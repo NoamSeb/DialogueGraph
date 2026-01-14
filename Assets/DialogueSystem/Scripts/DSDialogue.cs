@@ -1,9 +1,5 @@
 using UnityEngine;
 
-namespace DS
-{
-    using ScriptableObjects;
-
     public class DSDialogue : MonoBehaviour
     {
         /* Dialogue Scriptable Objects */
@@ -19,4 +15,3 @@ namespace DS
         [SerializeField] private int selectedDialogueGroupIndex;
         [SerializeField] private int selectedDialogueIndex;
     }
-}

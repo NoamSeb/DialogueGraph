@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace DS.Data.Save
-{
+
     [Serializable]
     public class DSGroupSaveData
     {
@@ -10,4 +9,3 @@ namespace DS.Data.Save
         [field: SerializeField] public string Name { get; set; }
         [field: SerializeField] public Vector2 Position { get; set; }
     }
-}

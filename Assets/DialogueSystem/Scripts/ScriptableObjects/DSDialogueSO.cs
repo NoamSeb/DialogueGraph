@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DS.ScriptableObjects
-{
-    using Data;
-    using Enumerations;
 
     public class DSDialogueSO : ScriptableObject
     {
@@ -23,4 +19,3 @@ namespace DS.ScriptableObjects
             IsStartingDialogue = isStartingDialogue;
         }
     }
-}

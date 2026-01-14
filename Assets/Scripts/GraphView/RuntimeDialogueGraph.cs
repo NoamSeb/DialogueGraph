@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GraphView
-{
+
     [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
     public class RuntimeDialogueGraph : ScriptableObject
     {
@@ -28,4 +27,3 @@ namespace GraphView
         public ConditionsSC Condition;
         public string DestinationNodeID;
     }
-}
