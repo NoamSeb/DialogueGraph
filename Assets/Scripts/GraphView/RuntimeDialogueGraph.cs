@@ -16,7 +16,6 @@ namespace GraphView
     {
         public string DialogueNodeID;
         public Espeaker speaker;
-        public string SpeakerName;
         public string DialogueText;
         public List<ChoiceData> Choices = new List<ChoiceData>();
         public string NextDialogueNodeID;
