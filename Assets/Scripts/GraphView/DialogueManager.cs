@@ -89,9 +89,11 @@ namespace GraphView
                     {
                         choiceButton.onClick.AddListener(() =>
                         {
-                            if (!string.IsNullOrEmpty(choice.DestinationNodeID))
+                            if (!string.IsNullOrEmpty(choice.DestinationNodeID)) // SI LE STRING N'EST PAS VIDE
+                            {
                                 ShowNode(choice.DestinationNodeID);
-                            else
+                            }
+                            else // SINON FIN DE DIALOGU
                             {
                                 EndDialogue();
                             }

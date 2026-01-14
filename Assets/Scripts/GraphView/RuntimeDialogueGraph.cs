@@ -25,6 +25,7 @@ namespace GraphView
     public class ChoiceData
     {
         public string ChoiceText;
+        public ConditionsSC Condition;
         public string DestinationNodeID;
     }
 }
