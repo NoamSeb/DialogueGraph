@@ -106,9 +106,10 @@ namespace DS.Windows
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
 
-            this.AddManipulator(CreateNodeContextualMenu("Add Node (Single Choice)", DSDialogueType.SingleChoice));
             this.AddManipulator(CreateNodeContextualMenu("Add Node (Multiple Choice)", DSDialogueType.MultipleChoice));
-
+            this.AddManipulator(CreateNodeContextualMenu("Start",DSDialogueType.Start));
+            this.AddManipulator(CreateNodeContextualMenu("Node",DSDialogueType.End));
+ 
             this.AddManipulator(CreateGroupContextualMenu());
         }
 
@@ -148,6 +149,22 @@ namespace DS.Windows
                 group.AddElement(node);
             }
             return group;
+        }
+        
+        public DSNode CreateNode(string nodeName, Vector2 position, bool shouldDraw = true)
+        {
+            DSNode node = new DSNode();
+
+            node.Initialize(nodeName, this, position);
+
+            if (shouldDraw)
+            {
+                node.Draw();
+            }
+
+            AddUngroupedNode(node);
+
+            return node;
         }
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {

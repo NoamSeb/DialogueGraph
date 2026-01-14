@@ -15,15 +15,15 @@ MonoBehaviour:
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
   <Nodes>k__BackingField:
-  - <ID>k__BackingField: de7ecf18-0e07-4813-a430-28c353e5cf9d
+  - <ID>k__BackingField: 02157ad0-e7bf-4612-be25-ef49358ed432
     <Name>k__BackingField: DialogueName
     <Text>k__BackingField: Dialogue text.
     <Choices>k__BackingField:
-    - <Text>k__BackingField: Next Dialogue
+    - <Text>k__BackingField: New Choice
       <NodeID>k__BackingField: 
     <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 536, y: 42}
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 409.33334, y: 328}
   <OldGroupNames>k__BackingField: []
   <OldUngroupedNodeNames>k__BackingField:
   - DialogueName

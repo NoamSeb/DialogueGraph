@@ -8,6 +8,8 @@ namespace DS.Elements
     using Enumerations;
     using Utilities;
     using Windows;
+    
+    
 
     public class DSMultipleChoiceNode : DSNode
     {
@@ -43,6 +45,11 @@ namespace DS.Elements
                 Port choicePort = CreateChoicePort(choiceData);
 
                 outputContainer.Add(choicePort);
+            });
+            
+            Button changeNodeType = DSElementUtility.CreateButton("Switch node Type", () =>
+            {
+                
             });
 
             addChoiceButton.AddToClassList("ds-node__button");
