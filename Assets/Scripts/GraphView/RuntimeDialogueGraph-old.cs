@@ -4,14 +4,14 @@ using UnityEngine;
 
 
     [CreateAssetMenu(fileName = "FILENAME", menuName = "MENUNAME", order = 0)]
-    public class RuntimeDialogueGraph : ScriptableObject
+    public class RuntimeDialogueGraphOld : ScriptableObject
     {
         public string EntryNodeID;
         public List<RuntimeDialogueNode> AllNodes = new List<RuntimeDialogueNode>();
     }
     
     [Serializable]
-    public class RuntimeDialogueNode
+    public class RuntimeDialogueNodeOld
     {
         public string DialogueNodeID;
         public Espeaker speaker;
@@ -21,7 +21,7 @@ using UnityEngine;
     }
 
     [Serializable]
-    public class ChoiceData
+    public class ChoiceDataOld
     {
         public string ChoiceText;
         public ConditionsSC Condition;
