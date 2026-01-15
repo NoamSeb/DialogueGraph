@@ -41,7 +41,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame && _currentNode != null && _currentNode.Choices.Count == 0)
+        if (Mouse.current.leftButton.wasPressedThisFrame && _currentNode != null && _currentNode.ChoicesInNode.Count == 0)
         {
             if (!string.IsNullOrEmpty(_currentNode.NextDialogueNodeID))
             {
@@ -66,8 +66,8 @@ public class DialogueManager : MonoBehaviour
 
         dialoguePanel.SetActive(true);
         //SpeakerNameText.SetText(_currentNode.SpeakerName);
-        print(_currentNode.speaker);
-        ChangeSpeaker(_currentNode.speaker);
+        print(_currentNode.Speaker);
+        ChangeSpeaker(_currentNode.Speaker);
 
         DialogueText.SetText(_currentNode.Text);
 
@@ -76,9 +76,9 @@ public class DialogueManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (_currentNode.Choices.Count > 0)
+        if (_currentNode.ChoicesInNode.Count > 0)
         {
-            foreach (DSChoiceSaveData choice in _currentNode.Choices)
+            foreach (DSChoiceSaveData choice in _currentNode.ChoicesInNode)
             {
                 Button choiceButton = Instantiate(ChoiceButtonPrefab, ChoiceButtonContainer);
 

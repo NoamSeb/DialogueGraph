@@ -10,9 +10,7 @@ using UnityEngine.UIElements;
         private Button _addChoiceButton;
         private Button _changeNodeType;
         private TextField _statedNodeField;
-        private bool _isMultipleChoice = false;
         private List<Port> _choicePorts = new List<Port>();
-        
 
         public override void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
         {
@@ -22,15 +20,24 @@ using UnityEngine.UIElements;
 
             DSChoiceSaveData choiceData = new DSChoiceSaveData()
             {
-                Text = "New Choice"
             };
+            
+            if (Saves.isMultipleChoice)
+            {
+                choiceData.Text = "New Choice";
+            }
+            else
+            {
+                choiceData.Text = "Continue";
+            }
 
-            Choices.Add(choiceData);
+            
+            Saves.ChoicesInNode.Add(choiceData);
         }
 
         private void ClearChoicePorts()
         {
-            Choices.Clear(); 
+            Saves.ChoicesInNode.Clear(); 
             foreach (Port port in _choicePorts)
             {
                 if (port.connected)
@@ -51,14 +58,14 @@ using UnityEngine.UIElements;
                 Text = text,
             };
 
-            Choices.Add(choiceData);
+            Saves.ChoicesInNode.Add(choiceData);
             Port choicePort = CreateChoicePort(choiceData, canBeDeleted);
             outputContainer.Add(choicePort);
         }
-        
-        public void SetNodeType(bool isMultipleChoice)
+
+        private void SetNodeType()
         {
-            if (_isMultipleChoice)
+            if (Saves.isMultipleChoice)
             {
                 _changeNodeType.RemoveFromClassList("ds-node__buttonMultiple");
                 _changeNodeType.AddToClassList("ds-node__buttonSingle");
@@ -80,16 +87,18 @@ using UnityEngine.UIElements;
         {
             ClearChoicePorts();
             
-            _isMultipleChoice = !_isMultipleChoice;
+            Saves.isMultipleChoice = !Saves.isMultipleChoice;
 
-            
-            if (_isMultipleChoice) 
+
+            if (Saves.isMultipleChoice)
+            {
                 CreateSingleChoicePort("New choice", true);
+                CreateSingleChoicePort("New choice", true);
+            }
             else
                 CreateSingleChoicePort("Continue", false);
             
-            SetNodeType(_isMultipleChoice);
-
+            SetNodeType();
 
             RefreshExpandedState();
 
@@ -115,7 +124,7 @@ using UnityEngine.UIElements;
                     Text = "New Choice"
                 };
 
-                Choices.Add(choiceData);
+                Saves.ChoicesInNode.Add(choiceData);
                 Port choicePort = CreateChoicePort(choiceData);
                 outputContainer.Add(choicePort);
             });
@@ -134,13 +143,13 @@ using UnityEngine.UIElements;
 
             /* OUTPUT CONTAINER */
 
-            foreach (DSChoiceSaveData choice in Choices)
+            foreach (DSChoiceSaveData choice in Saves.ChoicesInNode)
             {
                 Port choicePort = CreateChoicePort(choice);
                 outputContainer.Add(choicePort);
             }
             
-            SetNodeType(_isMultipleChoice);
+            SetNodeType();
             
             RefreshExpandedState();
             
@@ -158,7 +167,7 @@ using UnityEngine.UIElements;
             {
                 Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
                 {
-                    if (Choices.Count == 1)
+                    if (Saves.ChoicesInNode.Count == 1)
                     {
                         return;
                     }
@@ -168,7 +177,7 @@ using UnityEngine.UIElements;
                         graphView.DeleteElements(choicePort.connections);
                     }
 
-                    Choices.Remove(choiceData);
+                    Saves.ChoicesInNode.Remove(choiceData);
                     graphView.RemoveElement(choicePort);
                 
                 });

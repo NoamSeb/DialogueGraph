@@ -142,21 +142,6 @@ using UnityEngine.UIElements;
             return group;
         }
         
-        public DSNode CreateNode(string nodeName, Vector2 position, bool shouldDraw = true)
-        {
-            DSNode node = new DSNode();
-
-            node.Initialize(nodeName, this, position);
-
-            if (shouldDraw)
-            {
-                node.Draw();
-            }
-
-            AddUngroupedNode(node);
-
-            return node;
-        }
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
             Type nodeType = Type.GetType($"DS{dialogueType}Node");
