@@ -141,6 +141,16 @@ using UnityEngine.UIElements;
             FillCsvDropdown(dp);
             dp.RegisterValueChangedCallback(callback => { OnDropdownEvent(dp);});
 
+            TextField textTextField = DSElementUtility.CreateTextArea(Text, null, callback => Text = callback.newValue);
+
+            textTextField.AddClasses(
+                "ds-node__text-field",
+                "ds-node__quote-text-field"
+            );
+            
+
+
+            textFoldout.Add(textTextField);
             _fieldLabel = DSElementUtility.CreateTextField("XXX");
             
             textFoldout.Add(dp);
@@ -149,6 +159,8 @@ using UnityEngine.UIElements;
             customDataContainer.Add(textFoldout);
 
             extensionContainer.Add(customDataContainer);
+            
+            
         }
 
         public void DisconnectAllPorts()
@@ -183,8 +195,17 @@ using UnityEngine.UIElements;
 
         private void DisconnectPorts(VisualElement container)
         {
-            foreach (Port port in container.Children())
+            if (container == null)
             {
+                return;
+            }
+            foreach (var visualElement in container.Children())
+            {
+                var port = (Port)visualElement;
+                if (port == null)
+                {
+                    continue;
+                }
                 if (!port.connected)
                 {
                     continue;
@@ -204,7 +225,6 @@ using UnityEngine.UIElements;
         public void SetErrorStyle(Color color)
         {
             mainContainer.style.backgroundColor = color;
-            Debug.Log("Set error style on node: " + DialogueName);
         }
 
         public void ResetStyle()
@@ -215,6 +235,5 @@ using UnityEngine.UIElements;
         public void SetSpeaker(Espeaker speaker)
         {
             Speaker = speaker;
-            Debug.Log("Speaker set to: " + Speaker);
         }
     }
