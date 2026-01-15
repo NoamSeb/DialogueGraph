@@ -92,23 +92,8 @@ public class DialogueManager : MonoBehaviour
                 TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
                 if (choiceText != null)
                 {
-                    choiceText.text = choice.Text;
+                    choiceText.text = "TEST";
                 }
-
-                // if (choiceButton != null)
-                // {
-                //     choiceButton.onClick.AddListener(() =>
-                //     {
-                //         if (!string.IsNullOrEmpty(choice.DestinationNodeID)) // SI LE STRING N'EST PAS VIDE
-                //         {
-                //             ShowNode(choice.DestinationNodeID);
-                //         }
-                //         else // SINON FIN DE DIALOGU
-                //         {
-                //             EndDialogue();
-                //         }
-                //     });
-                // }
             }
         }
     }

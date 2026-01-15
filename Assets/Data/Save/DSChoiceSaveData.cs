@@ -2,11 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 
-    [Serializable]
+[Serializable]
     public class DSChoiceSaveData
     {
-        [field: SerializeField] public string Text { get; set; }
+        public DSChoiceSaveData()
+        {
+        }
+        
+        [field: SerializeField] public string DropDownKey { get; set; }
         [field: SerializeField] public string NodeID { get; set; }
+
     }

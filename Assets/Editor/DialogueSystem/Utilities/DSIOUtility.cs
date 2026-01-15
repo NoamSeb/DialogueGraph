@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DS.Utilities;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -13,7 +14,7 @@ using UnityEngine;
         private static string graphFileName;
         private static string containerFolderPath;
 
-        private static List<DSNode> nodes;
+        private static List<DSNode> nodes; 
         private static List<DSGroup> groups;
 
         private static Dictionary<string, DSDialogueGroupSO> createdDialogueGroups;
@@ -21,6 +22,11 @@ using UnityEngine;
 
         private static Dictionary<string, DSGroup> loadedGroups;
         private static Dictionary<string, DSNode> loadedNodes;
+        
+        public static string CheckNameWithOthers(string name)
+        {
+            return name;
+        }
 
         public static void Initialize(DSGraphView dsGraphView, string graphName)
         {
@@ -29,7 +35,6 @@ using UnityEngine;
             graphFileName = graphName;
             containerFolderPath = $"Assets/DialogueSystem/Dialogues/{graphName}";
 
-            nodes = new List<DSNode>();
             groups = new List<DSGroup>();
 
             createdDialogueGroups = new Dictionary<string, DSDialogueGroupSO>();
@@ -207,7 +212,7 @@ using UnityEngine;
             {
                 DSDialogueChoiceData choiceData = new DSDialogueChoiceData()
                 {
-                    Text = nodeChoice.Text
+                    //Text = nodeChoice.Text
                 };
 
                 dialogueChoices.Add(choiceData);
@@ -470,10 +475,10 @@ using UnityEngine;
             {
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
-                    Text = choice.Text,
+                  //  Text = choice.Text,
                     NodeID = choice.NodeID
                 };
-
+                
                 choices.Add(choiceData);
             }
 

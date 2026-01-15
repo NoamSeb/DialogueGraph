@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
+
     public class DSMultipleChoiceNode : DSNode
     {
-        
         private Button _addChoiceButton;
         private Button _changeNodeType;
         private TextField _statedNodeField;
         private List<Port> _choicePorts = new List<Port>();
-
+        private TextField _fieldTranslateLabel;
 
         public override void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
         {
@@ -46,11 +46,11 @@ using UnityEngine.UIElements;
         {
             DSChoiceSaveData choiceData = new DSChoiceSaveData()
             {
-                Text = text,
+                // CALLBACK ON CHANGE DROP DOWN VALUE TO KEY LOCAL
             };
-
+            
             Saves.ChoicesInNode.Add(choiceData);
-            Port choicePort = CreateChoicePort(choiceData, canBeDeleted, haveConditions);
+            Port choicePort = CreateChoicePort(choiceData);
             outputContainer.Add(choicePort);
         }
 
@@ -108,18 +108,16 @@ using UnityEngine.UIElements;
             
             titleContainer.Add(_statedNodeField);
             
-            
             /* MAIN CONTAINER */
 
             _addChoiceButton = DSElementUtility.CreateButton("Add Choice", () =>
             {
-                DSChoiceSaveData choiceData = new DSChoiceSaveData()
-                {
-                    Text = "New Choice"
-                };
-
+                DSChoiceSaveData choiceData = new DSChoiceSaveData() {};
+                
                 Saves.ChoicesInNode.Add(choiceData);
-                Port choicePort = CreateChoicePort(choiceData , true, true);
+                
+                Port choicePort = CreateChoicePort(choiceData);
+                
                 outputContainer.Add(choicePort);
             });
             
@@ -139,22 +137,19 @@ using UnityEngine.UIElements;
 
             foreach (DSChoiceSaveData choice in Saves.ChoicesInNode)
             {
-                Port choicePort = CreateChoicePort(choice, Saves.isMultipleChoice, Saves.isMultipleChoice);
+                Port choicePort = CreateChoicePort(choice);
                 
                 // LOAD CONDITIONS //
                 
                 foreach (var conditions in Saves.ConditionsMap)
                 {
-                    if(conditions.Key.userData == choice.Text)
+                    if(conditions.Key.userData == choice)
                     {
                         foreach (var condElem in conditions.Value)
                         {
-                            if (condElem == null)
-                            {
-                                return;
-                            }
+                            if (condElem == null) { return; } 
                             
-                            AddConditionsBelowPort(conditions.Key);
+                            AddConditionsBelowPort(conditions.Key, CreateConditions());
                         }
                     }
                 }
@@ -163,14 +158,10 @@ using UnityEngine.UIElements;
             
             if (Saves.ChoicesInNode.Count == 0)
             {
-                Debug.Log("No choices found, creating default ones.");
-                DSChoiceSaveData choiceData = new DSChoiceSaveData()
-                {
-                    Text = "Continue"
-                };
+                DSChoiceSaveData choiceData = new DSChoiceSaveData() { };
 
                 Saves.ChoicesInNode.Add(choiceData);
-                Port choicePort = CreateChoicePort(choiceData , false, false);
+                Port choicePort = CreateChoicePort(choiceData);
                 outputContainer.Add(choicePort);
             }
             
@@ -179,76 +170,90 @@ using UnityEngine.UIElements;
             RefreshExpandedState();
         }
 
-        private Port CreateChoicePort(object userData, bool canBeDeleted, bool haveConditions)
+        private Port CreateChoicePort(object userData)
         {
             Port choicePort = this.CreatePort();
 
             choicePort.userData = userData;
 
             DSChoiceSaveData choiceData = (DSChoiceSaveData) userData;
-
-            if (canBeDeleted)
+            if(Saves.isMultipleChoice)
             {
-                Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
+                DropdownField choiceDropdown = DSElementUtility.CreateDropdownArea("Choice KEY");
+                FillCsvDropdown(choiceDropdown);
+                choiceDropdown.RegisterValueChangedCallback(callback => 
                 {
-                    if (Saves.ChoicesInNode.Count <= 2)
-                    {
-                        return;
-                    }
-
-                    if (choicePort.connected)
-                    {
-                        graphView.DeleteElements(choicePort.connections);
-                    }
-
-                    if (Saves.ConditionsMap.TryGetValue(choicePort, out List<VisualElement> condElem))
-                    {
-                        Debug.Log("Clearing conditions for deleted choice." + condElem.Count);
-                        
-                        ClearConditions(condElem);
-                        Saves.ConditionsMap.Remove(choicePort);
-                    }
-
-                    Saves.ChoicesInNode.Remove(choiceData);
-                    graphView.RemoveElement(choicePort);
+                    OnDropDownChoiceTranslate(choicePort);
                 });
                 
-                deleteChoiceButton.AddToClassList("ds-node__buttonDelete");
-                choicePort.Add(deleteChoiceButton);
+                choicePort.Add(choiceDropdown);
+            }
+            else
+            {
+                Label choiceLabel = new Label("Continue");
+                choicePort.Add(choiceLabel);
             }
 
-            if (haveConditions)
-            {
-                Button conditionsButton = DSElementUtility.CreateButton("Add Conditions", () =>
-                { AddConditionsBelowPort(choicePort); });
 
-    
+            if (Saves.isMultipleChoice)
+            {
+                if (Saves.ChoicesInNode.Count > 2)
+                {
+                    Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
+                    {
+                        if (choicePort.connected)
+                        {
+                            graphView.DeleteElements(choicePort.connections);
+                        }
+
+                        if (Saves.ConditionsMap.TryGetValue(choicePort, out List<VisualElement> condElem))
+                        {
+                            ClearConditions(condElem);
+                            Saves.ConditionsMap.Remove(choicePort);
+                        }
+
+                        Saves.ChoicesInNode.Remove(choiceData);
+                        graphView.RemoveElement(choicePort);
+                        
+                    });
+                    deleteChoiceButton.AddToClassList("ds-node__buttonDelete");
+                    choicePort.Add(deleteChoiceButton);
+                }
+            }
+
+            if (Saves.isMultipleChoice)
+            {
+                Button conditionsButton = DSElementUtility.CreateButton("Add Conditions", () => {AddConditionsBelowPort(choicePort, CreateConditions());});
                 conditionsButton.AddToClassList("ds-node__button");
                 choicePort.Add(conditionsButton);
+                
+                AddConditionsBelowPort(choicePort, CreateLabelChoiceTranslate(), false);
             }
-
-            TextField choiceTextField = DSElementUtility.CreateTextField(choiceData.Text, null, callback =>
-            {
-                choiceData.Text = callback.newValue;
-            });
-
-            choiceTextField.AddClasses
-            (
-                "ds-node__text-field",
-                "ds-node__text-field__hidden",
-                "ds-node__choice-text-field"
-            );
-
-            choicePort.Add(choiceTextField);
+            
             
             _choicePorts.Add(choicePort);
 
             return choicePort;
         }
 
+        private void OnDropDownChoiceTranslate(Port choicePort)
+        {
+            if(Saves.ConditionsMap.TryGetValue(choicePort, out var condElem))
+            {
+                if (condElem[0] == null) { return;}
+                choicePort.Remove(condElem[0]);
+            }
+        }
+
+        private VisualElement CreateLabelChoiceTranslate()
+        {
+            _fieldTranslateLabel = DSElementUtility.CreateTextField("Translate: XXX", null);
+            return _fieldTranslateLabel;
+        }
+
         private VisualElement CreateConditions()
         {
-            ObjectField conditionsField = new ObjectField("Conditions Object")
+            ObjectField conditionsField = new ObjectField()
             {
                 objectType = typeof(ConditionsSC),
                 allowSceneObjects = false
@@ -262,46 +267,44 @@ using UnityEngine.UIElements;
             return conditionsField;
         }
         
-        private void AddConditionsBelowPort(Port port)
+        private void AddConditionsBelowPort(Port port, VisualElement element, bool canBeDeleted = true)
         {
             if (port == null)
                 return;
 
-            VisualElement conditions = CreateConditions();
-            conditions.AddToClassList("ds-node__conditions-container");
+            VisualElement visualElementTarget = element;
+            visualElementTarget.AddToClassList("ds-node__conditions-container");
 
             int idx = outputContainer.IndexOf(port);
             if (idx < 0)
             {
-                outputContainer.Add(conditions);
+                outputContainer.Add(visualElementTarget);
             }
             else
             {
-                outputContainer.Insert(idx + 1, conditions);
+                outputContainer.Insert(idx + 1, visualElementTarget);
             }
 
             if (!Saves.ConditionsMap.ContainsKey(port))
             {
-                Debug.Log("Adding first conditions element to the port.");
                 Saves.ConditionsMap[port] = new List<VisualElement>();
             }
-            else
+            
+            Saves.ConditionsMap[port].Add(visualElementTarget);
+            
+            if (canBeDeleted)
             {
-                Debug.Log("Adding another conditions element to the same port.");
+                Button butClearCondition = DSElementUtility.CreateButton("X", () => { this.RemoveCondition(visualElementTarget); });
+            
+                butClearCondition.AddToClassList("ds-node__buttonDeleteCondition");
+                visualElementTarget.Add(butClearCondition);
             }
-            Saves.ConditionsMap[port].Add(conditions);
             
-            Button butClearCondition = DSElementUtility.CreateButton("X", () =>
-                { this.ClearCondition(conditions); });
-            
-            butClearCondition.AddToClassList("ds-node__buttonDeleteCondition");
-            conditions.Add(butClearCondition);
-
             RefreshExpandedState();
             MarkDirtyRepaint();
         }
         
-        private void ClearCondition(VisualElement condition)
+        private void RemoveCondition(VisualElement condition)
         {
             if (condition != null && condition.parent != null)
             {
@@ -318,7 +321,6 @@ using UnityEngine.UIElements;
                     outputContainer.Remove(condition);
                 }
             }
-            
         }
 
     }

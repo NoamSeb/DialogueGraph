@@ -13,9 +13,6 @@ using UnityEngine.UIElements;
         public Espeaker Speaker { get; set; }
         public DSNodeSaveData Saves { get; set; }
         public string Text { get; set; }
-        
-        public DropdownField DialogueTypeField { get; set; }
-        public Label LanguageLabel { get; set; }
         public DSDialogueType DialogueType { get; set; }
         public DSGroup Group { get; set; }
 
@@ -23,7 +20,6 @@ using UnityEngine.UIElements;
         
         private Color defaultBackgroundColor;
 
-    //    private Label _languageLabel;
         private TextField _fieldLabel;
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -39,11 +35,15 @@ using UnityEngine.UIElements;
             ID = Guid.NewGuid().ToString();
             
             DialogueName = nodeName;
+            
+           // DialogueName = DSIOUtility.CheckNameWithOthers(nodeName);
+
+           var txt = DSIOUtility.CheckNameWithOthers(nodeName);
+            
+            
             Saves = new DSNodeSaveData();
             Saves.ChoicesInNode = new List<DSChoiceSaveData>();
             Text = "Dialogue text.";
-            DialogueTypeField =  new DropdownField();
-            LanguageLabel = new Label();
             SetPosition(new Rect(position, Vector2.zero));
 
             graphView = dsGraphView;
@@ -129,13 +129,6 @@ using UnityEngine.UIElements;
 
             Foldout textFoldout = DSElementUtility.CreateFoldout("Dialogue Text");
             
-            // TextField textTextField = DSElementUtility.CreateTextArea(Text, null, callback => Text = callback.newValue);
-            //
-            // textTextField.AddClasses(
-            //     "ds-nodetext-field",
-            //     "ds-nodequote-text-field"
-            // );
-            
             var dp = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose an option");
             
             FillCsvDropdown(dp);
@@ -147,8 +140,6 @@ using UnityEngine.UIElements;
                 "ds-node__text-field",
                 "ds-node__quote-text-field"
             );
-            
-
 
             textFoldout.Add(textTextField);
             _fieldLabel = DSElementUtility.CreateTextField("XXX");
@@ -159,8 +150,6 @@ using UnityEngine.UIElements;
             customDataContainer.Add(textFoldout);
 
             extensionContainer.Add(customDataContainer);
-            
-            
         }
 
         public void DisconnectAllPorts()
@@ -174,7 +163,7 @@ using UnityEngine.UIElements;
             _fieldLabel.value = $"FR : {FantasyDialogueTable.Find_idLng(dropdownField.value).FR}";
         }
 
-        private void FillCsvDropdown(DropdownField  dropdownField)
+        public void FillCsvDropdown(DropdownField  dropdownField)
         {
             List<string> keys = FantasyDialogueTable.FindAll_Keys();
             foreach (string key in keys)

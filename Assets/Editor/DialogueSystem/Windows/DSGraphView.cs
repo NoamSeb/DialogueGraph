@@ -144,12 +144,20 @@ using UnityEngine.UIElements;
         
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
+            
             Type nodeType = Type.GetType($"DS{dialogueType}Node");
+            if (nodeType == null)
+            {
+                throw new Exception($"Node type for dialogue type {dialogueType} not found");
+            }
             
             DSNode node = (DSNode) Activator.CreateInstance(nodeType);
+            if (node == null)
+            {
+                throw new Exception($"Failed to create node of type {nodeType}");
+            }
 
             node.Initialize(nodeName, this, position);
-            
 
             if (shouldDraw)
             {
