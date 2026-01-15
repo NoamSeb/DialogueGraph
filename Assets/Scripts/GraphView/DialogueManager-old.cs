@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace GraphView
 {
-    public class DialogueManager : MonoBehaviour
+    public class DialogueManagerOld : MonoBehaviour
     {
         public RuntimeDialogueGraph  runtimeGraph;
         
