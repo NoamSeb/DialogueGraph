@@ -12,7 +12,7 @@ using UnityEngine.UIElements;
         public string DialogueName { get; set; }
         
         public Espeaker Speaker { get; set; }
-        public List<DSChoiceSaveData> Choices { get; set; }
+        public List<DSNodeSaveData> Choices { get; set; }
         public string Text { get; set; }
         public DSDialogueType DialogueType { get; set; }
         public DSGroup Group { get; set; }
