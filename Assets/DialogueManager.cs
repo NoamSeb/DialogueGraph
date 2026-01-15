@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using NaughtyAttributes;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -21,6 +22,12 @@ public class DialogueManager : MonoBehaviour
 
     private Dictionary<string, DSNodeSaveData> _nodeLookup = new Dictionary<string, DSNodeSaveData>();
     private DSNodeSaveData _currentNode;
+
+    [Button]
+    public void LoadCsv()
+    {
+        FantasyDialogueTable.Load();
+    }
 
     private void Start()
     {

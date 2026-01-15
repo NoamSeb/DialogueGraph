@@ -13,12 +13,18 @@ using UnityEngine.UIElements;
         public Espeaker Speaker { get; set; }
         public DSNodeSaveData Saves { get; set; }
         public string Text { get; set; }
+        
+        public DropdownField DialogueTypeField { get; set; }
+        public Label LanguageLabel { get; set; }
         public DSDialogueType DialogueType { get; set; }
         public DSGroup Group { get; set; }
 
         protected DSGraphView graphView;
         
         private Color defaultBackgroundColor;
+
+    //    private Label _languageLabel;
+        private TextField _fieldLabel;
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
@@ -31,12 +37,13 @@ using UnityEngine.UIElements;
         public virtual void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
         {
             ID = Guid.NewGuid().ToString();
-
+            
             DialogueName = nodeName;
             Saves = new DSNodeSaveData();
             Saves.ChoicesInNode = new List<DSChoiceSaveData>();
             Text = "Dialogue text.";
-
+            DialogueTypeField =  new DropdownField();
+            LanguageLabel = new Label();
             SetPosition(new Rect(position, Vector2.zero));
 
             graphView = dsGraphView;
@@ -91,6 +98,8 @@ using UnityEngine.UIElements;
                 graphView.AddGroupedNode(this, currentGroup);
             });
 
+            var xx = DSElementUtility.CreateDropdownField();
+
             dialogueNameTextField.AddClasses(
                 "ds-node__text-field",
                 "ds-node__text-field__hidden",
@@ -119,15 +128,23 @@ using UnityEngine.UIElements;
             customDataContainer.AddToClassList("ds-node__custom-data-container");
 
             Foldout textFoldout = DSElementUtility.CreateFoldout("Dialogue Text");
+            
+            // TextField textTextField = DSElementUtility.CreateTextArea(Text, null, callback => Text = callback.newValue);
+            //
+            // textTextField.AddClasses(
+            //     "ds-nodetext-field",
+            //     "ds-nodequote-text-field"
+            // );
+            
+            var dp = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose an option");
+            
+            FillCsvDropdown(dp);
+            dp.RegisterValueChangedCallback(callback => { OnDropdownEvent(dp);});
 
-            TextField textTextField = DSElementUtility.CreateTextArea(Text, null, callback => Text = callback.newValue);
-
-            textTextField.AddClasses(
-                "ds-node__text-field",
-                "ds-node__quote-text-field"
-            );
-
-            textFoldout.Add(textTextField);
+            _fieldLabel = DSElementUtility.CreateTextField("XXX");
+            
+            textFoldout.Add(dp);
+            textFoldout.Add(_fieldLabel);
 
             customDataContainer.Add(textFoldout);
 
@@ -138,6 +155,20 @@ using UnityEngine.UIElements;
         {
             DisconnectInputPorts();
             DisconnectOutputPorts();
+        }
+
+        private void OnDropdownEvent(DropdownField dropdownField)
+        {
+            _fieldLabel.value = $"FR : {FantasyDialogueTable.Find_idLng(dropdownField.value).FR}";
+        }
+
+        private void FillCsvDropdown(DropdownField  dropdownField)
+        {
+            List<string> keys = FantasyDialogueTable.FindAll_Keys();
+            foreach (string key in keys)
+            {
+                dropdownField.choices.Add(key);
+            }
         }
 
         private void DisconnectInputPorts()
