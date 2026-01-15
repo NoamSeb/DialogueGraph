@@ -2,11 +2,6 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace DS.Windows
-{
-    using Elements;
-    using Enumerations;
-
     public class DSSearchWindow : ScriptableObject, ISearchWindowProvider
     {
         private DSGraphView graphView;
@@ -86,4 +81,3 @@ namespace DS.Windows
             }
         }
     }
-}

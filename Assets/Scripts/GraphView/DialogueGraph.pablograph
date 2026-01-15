@@ -58,10 +58,10 @@ MonoBehaviour:
         m_LocalSubgraphs: []
         m_LastKnownBounds:
           serializedVersion: 2
-          x: 400.66666
-          y: 74
-          width: 1710.0001
-          height: 1817.3334
+          x: 0
+          y: 0
+          width: 0
+          height: 0
         m_GraphElementMetaData:
         - m_Guid:
             m_Value0: 15061494105187285417
@@ -339,10 +339,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774769139548428
-    - rid: 731774769139548428
-      type: {class: StartNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
+          rid: -2
     - rid: 731774769139548429
       type: {class: UserNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: Unity.GraphToolkit.Editor}
       data:
@@ -360,12 +357,8 @@ MonoBehaviour:
           rid: -2
         m_State: 0
         m_InputConstantsById:
-          m_KeyList:
-          - Speaker
-          - Dialogue
-          m_ValueList:
-          - rid: 731774769139548431
-          - rid: 731774769139548432
+          m_KeyList: []
+          m_ValueList: []
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -380,7 +373,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774769139548433
+          rid: -2
     - rid: 731774769139548430
       type: {class: WireModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -413,17 +406,6 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: in
-    - rid: 731774769139548431
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
-    - rid: 731774769139548432
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: Sigma boy
-    - rid: 731774769139548433
-      type: {class: DialogueNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
     - rid: 731774769139548434
       type: {class: WireModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -489,10 +471,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774769139548443
-    - rid: 731774769139548443
-      type: {class: EndNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
+          rid: -2
     - rid: 731774769139548445
       type: {class: VariableDeclarationModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -574,20 +553,8 @@ MonoBehaviour:
           rid: -2
         m_State: 0
         m_InputConstantsById:
-          m_KeyList:
-          - __option_portCount
-          - Speaker
-          - Dialogue
-          - condtions_0
-          - condtions_1
-          - condtions_2
-          m_ValueList:
-          - rid: 4949888424460943532
-          - rid: 4949888424460943537
-          - rid: 4949888424460943538
-          - rid: 4949888424460943640
-          - rid: 4949888424460943648
-          - rid: 4949888424460943650
+          m_KeyList: []
+          m_ValueList: []
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -602,10 +569,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774773912666267
-    - rid: 731774773912666267
-      type: {class: ChoiceNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
+          rid: -2
     - rid: 731774773912666268
       type: {class: WireModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -687,12 +651,8 @@ MonoBehaviour:
           rid: -2
         m_State: 0
         m_InputConstantsById:
-          m_KeyList:
-          - Speaker
-          - Dialogue
-          m_ValueList:
-          - rid: 731774773912666278
-          - rid: 731774773912666279
+          m_KeyList: []
+          m_ValueList: []
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -707,7 +667,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774773912666280
+          rid: -2
     - rid: 731774773912666276
       type: {class: VariableNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: Unity.GraphToolkit.Editor}
       data:
@@ -777,17 +737,6 @@ MonoBehaviour:
           m_PortDirection: 1
           m_PortOrientation: 0
           m_Title: Speaker
-    - rid: 731774773912666278
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
-    - rid: 731774773912666279
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: Je deviens fou je crois
-    - rid: 731774773912666280
-      type: {class: DialogueNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
     - rid: 731774773912666283
       type: {class: UserNodeModelImp, ns: Unity.GraphToolkit.Editor.Implementation, asm: Unity.GraphToolkit.Editor}
       data:
@@ -821,10 +770,7 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 731774773912666284
-    - rid: 731774773912666284
-      type: {class: EndNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
+          rid: -2
     - rid: 731774773912666285
       type: {class: WireModel, ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
       data:
@@ -886,10 +832,8 @@ MonoBehaviour:
           rid: -2
         m_State: 0
         m_InputConstantsById:
-          m_KeyList:
-          - Condition
-          m_ValueList:
-          - rid: 4949888424460943490
+          m_KeyList: []
+          m_ValueList: []
         m_InputPortInfos:
           expandedPortsById:
             m_KeyList: []
@@ -904,35 +848,4 @@ MonoBehaviour:
           m_Color: {r: 0, g: 0, b: 0, a: 0}
           m_HasUserColor: 0
         m_Node:
-          rid: 4949888424460943486
-    - rid: 4949888424460943486
-      type: {class: ConditionNode, ns: GraphView, asm: Assembly-CSharp-Editor}
-      data: 
-    - rid: 4949888424460943490
-      type: {class: 'Constant`1[[ConditionsSC, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: {fileID: 11400000, guid: e601c92e8f8344b42bbcf5c8044b7e4d, type: 2}
-    - rid: 4949888424460943532
-      type: {class: 'Constant`1[[System.Int32, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 3
-    - rid: 4949888424460943537
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
-    - rid: 4949888424460943538
-      type: {class: 'Constant`1[[System.String, mscorlib]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: 
-    - rid: 4949888424460943640
-      type: {class: 'Constant`1[[ConditionsSC, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: {fileID: 11400000, guid: e601c92e8f8344b42bbcf5c8044b7e4d, type: 2}
-    - rid: 4949888424460943648
-      type: {class: 'Constant`1[[ConditionsSC, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: {fileID: 0}
-    - rid: 4949888424460943650
-      type: {class: 'Constant`1[[ConditionsSC, Assembly-CSharp]]', ns: Unity.GraphToolkit.Editor, asm: Unity.GraphToolkit.Internal.Editor}
-      data:
-        m_Value: {fileID: 0}
+          rid: -2

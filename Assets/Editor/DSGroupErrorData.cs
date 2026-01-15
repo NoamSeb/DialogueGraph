@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 
-namespace DS.Data.Error
-{
-    using Elements;
 
     public class DSGroupErrorData
     {
@@ -15,4 +12,3 @@ namespace DS.Data.Error
             Groups = new List<DSGroup>();
         }
     }
-}

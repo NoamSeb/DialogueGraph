@@ -1,14 +1,16 @@
 :root
 {
-	--ds-colors-grid-light-grey-1: #97259a;
-	--ds-colors-grid-light-grey-2: rgba(51, 51, 51, 0.4);
-	--ds-colors-grid-light-grey-3: rgba(51, 51, 51, 1);
-	--ds-colors-window-dark-grey-1: #1D1D1E;
-	--ds-colors-window-dark-grey-2: #2B2D2F;
-	--ds-colors-window-dark-grey-3: #212325;
-	--ds-colors-window-dark-grey-4: #232527;
-	--ds-colors-window-dark-grey-5: #252729;
-	--ds-colors-window-dark-grey-6: #27292C;
+	--ds-colors-grid-light-grey-1: #b16d49;
+	--ds-colors-grid-light-grey-2: rgba(223, 0, 0, 0.4);
+	--ds-colors-grid-light-grey-3: rgb(147, 0, 0);
+	--ds-colors-window-dark-grey-1: #770000;
+	--ds-colors-window-dark-grey-2: #331313;
+	--ds-colors-window-dark-grey-3: #322121;
+	--ds-colors-window-dark-grey-4: #1e1313;
+	--ds-colors-window-dark-grey-5: #708eae;
+	--ds-colors-window-dark-grey-6: #4474af;
+	--ds-colors-window-dark-grey-7: #e6757f;
+	--ds-colors-window-dark-grey-8: #429ad8;
 	--ds-colors-window-yellow: #FDD057;
 
 	--ds-metrics-grid-25: 25;

@@ -1,18 +1,17 @@
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DS.Elements
-{
-    using Data.Save;
-    using Enumerations;
-    using Utilities;
-    using Windows;
-    
-    
 
     public class DSMultipleChoiceNode : DSNode
     {
+        
+        private Button _addChoiceButton;
+        private Button _changeNodeType;
+        private TextField _statedNodeField;
+        private List<Port> _choicePorts = new List<Port>();
+
         public override void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
         {
             base.Initialize(nodeName, dsGraphView, position);
@@ -21,54 +20,142 @@ namespace DS.Elements
 
             DSChoiceSaveData choiceData = new DSChoiceSaveData()
             {
-                Text = "New Choice"
+            };
+            
+            if (Saves.isMultipleChoice)
+            {
+                choiceData.Text = "New Choice";
+            }
+            else
+            {
+                choiceData.Text = "Continue";
+            }
+
+            
+            Saves.ChoicesInNode.Add(choiceData);
+        }
+
+        private void ClearChoicePorts()
+        {
+            Saves.ChoicesInNode.Clear(); 
+            foreach (Port port in _choicePorts)
+            {
+                if (port.connected)
+                {
+                    graphView.DeleteElements(port.connections);
+                }
+
+                graphView.RemoveElement(port);
+            }
+            
+            _choicePorts.Clear();
+        }
+        
+        private void CreateSingleChoicePort(string text, bool canBeDeleted)
+        {
+            DSChoiceSaveData choiceData = new DSChoiceSaveData()
+            {
+                Text = text,
             };
 
-            Choices.Add(choiceData);
+            Saves.ChoicesInNode.Add(choiceData);
+            Port choicePort = CreateChoicePort(choiceData, canBeDeleted);
+            outputContainer.Add(choicePort);
+        }
+
+        private void SetNodeType()
+        {
+            if (Saves.isMultipleChoice)
+            {
+                _changeNodeType.RemoveFromClassList("ds-node__buttonMultiple");
+                _changeNodeType.AddToClassList("ds-node__buttonSingle");
+                _statedNodeField.value = "Node Type: Multiple Choice";
+                mainContainer.Add(_addChoiceButton);
+            }
+            else
+            {
+                _statedNodeField.value = "Node Type: Single Choice";
+                _changeNodeType.RemoveFromClassList("ds-node__buttonSingle");
+                _changeNodeType.AddToClassList("ds-node__buttonMultiple");
+                if (mainContainer.Contains(_addChoiceButton))
+                {
+                    mainContainer.Remove(_addChoiceButton);
+                }
+            }
+        }
+        private void SwitchNodeType()
+        {
+            ClearChoicePorts();
+            
+            Saves.isMultipleChoice = !Saves.isMultipleChoice;
+
+
+            if (Saves.isMultipleChoice)
+            {
+                CreateSingleChoicePort("New choice", true);
+                CreateSingleChoicePort("New choice", true);
+            }
+            else
+                CreateSingleChoicePort("Continue", false);
+            
+            SetNodeType();
+
+            RefreshExpandedState();
+
         }
 
         public override void Draw()
         {
             base.Draw();
-
+            
+            // TOP LEVEL CONTAINERS
+            
+            _statedNodeField = DSElementUtility.CreateTextField("Node Type", null);
+            
+            titleContainer.Add(_statedNodeField);
+            
+            
             /* MAIN CONTAINER */
 
-            Button addChoiceButton = DSElementUtility.CreateButton("Add Choice", () =>
+            _addChoiceButton = DSElementUtility.CreateButton("Add Choice", () =>
             {
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
                     Text = "New Choice"
                 };
 
-                Choices.Add(choiceData);
-
+                Saves.ChoicesInNode.Add(choiceData);
                 Port choicePort = CreateChoicePort(choiceData);
-
                 outputContainer.Add(choicePort);
             });
             
-            Button changeNodeType = DSElementUtility.CreateButton("Switch node Type", () =>
+            _changeNodeType = DSElementUtility.CreateButton("Switch node Type", () =>
             {
-                
+                SwitchNodeType();
             });
-
-            addChoiceButton.AddToClassList("ds-node__button");
-
-            mainContainer.Insert(1, addChoiceButton);
+            
+            mainContainer.Add(_changeNodeType);
+            
+            mainContainer.Add(_addChoiceButton);
+            
+            _changeNodeType.AddToClassList("ds-node__buttonSingle");
+            _addChoiceButton.AddToClassList("ds-node__button");
 
             /* OUTPUT CONTAINER */
 
-            foreach (DSChoiceSaveData choice in Choices)
+            foreach (DSChoiceSaveData choice in Saves.ChoicesInNode)
             {
                 Port choicePort = CreateChoicePort(choice);
-
                 outputContainer.Add(choicePort);
             }
-
+            
+            SetNodeType();
+            
             RefreshExpandedState();
+            
         }
 
-        private Port CreateChoicePort(object userData)
+        private Port CreateChoicePort(object userData, bool canBeDeleted = true)
         {
             Port choicePort = this.CreatePort();
 
@@ -76,40 +163,47 @@ namespace DS.Elements
 
             DSChoiceSaveData choiceData = (DSChoiceSaveData) userData;
 
-            Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
+            if (canBeDeleted)
             {
-                if (Choices.Count == 1)
+                Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
                 {
-                    return;
-                }
+                    if (Saves.ChoicesInNode.Count == 1)
+                    {
+                        return;
+                    }
 
-                if (choicePort.connected)
-                {
-                    graphView.DeleteElements(choicePort.connections);
-                }
+                    if (choicePort.connected)
+                    {
+                        graphView.DeleteElements(choicePort.connections);
+                    }
 
-                Choices.Remove(choiceData);
+                    Saves.ChoicesInNode.Remove(choiceData);
+                    graphView.RemoveElement(choicePort);
+                
+                });
+                
+                deleteChoiceButton.AddToClassList("ds-node__button");
+                choicePort.Add(deleteChoiceButton);
 
-                graphView.RemoveElement(choicePort);
-            });
-
-            deleteChoiceButton.AddToClassList("ds-node__button");
+            }
+            
 
             TextField choiceTextField = DSElementUtility.CreateTextField(choiceData.Text, null, callback =>
             {
                 choiceData.Text = callback.newValue;
             });
 
-            choiceTextField.AddClasses(
+            choiceTextField.AddClasses
+            (
                 "ds-node__text-field",
                 "ds-node__text-field__hidden",
                 "ds-node__choice-text-field"
             );
 
             choicePort.Add(choiceTextField);
-            choicePort.Add(deleteChoiceButton);
+            
+            _choicePorts.Add(choicePort);
 
             return choicePort;
         }
     }
-}

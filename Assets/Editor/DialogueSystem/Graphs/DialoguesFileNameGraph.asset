@@ -15,17 +15,50 @@ MonoBehaviour:
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
   <Nodes>k__BackingField:
-  - <ID>k__BackingField: 02157ad0-e7bf-4612-be25-ef49358ed432
+  - <ID>k__BackingField: d1e170e5-1ba1-461d-8b9f-62584eada82a
     <Name>k__BackingField: DialogueName
+    <Speaker>k__BackingField: 0
+    _isMultipleChoice: 0
     <Text>k__BackingField: Dialogue text.
-    <Choices>k__BackingField:
+    <ChoicesInNode>k__BackingField:
+    - <Text>k__BackingField: Continue
+      <NodeID>k__BackingField: ad9c369b-280e-4ec9-8b8c-870bad742811
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 1064, y: 303.33334}
+    <NextDialogueNodeID>k__BackingField: 
+  - <ID>k__BackingField: b3b890e8-bb8e-4808-ac1f-e69087eec420
+    <Name>k__BackingField: x
+    <Speaker>k__BackingField: 0
+    _isMultipleChoice: 1
+    <Text>k__BackingField: Dialogue text.
+    <ChoicesInNode>k__BackingField:
+    - <Text>k__BackingField: New choice
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <NodeID>k__BackingField: 
     - <Text>k__BackingField: New Choice
       <NodeID>k__BackingField: 
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 1
-    <Position>k__BackingField: {x: 409.33334, y: 328}
+    <Position>k__BackingField: {x: 2316, y: 472.66666}
+    <NextDialogueNodeID>k__BackingField: 
+  - <ID>k__BackingField: ad9c369b-280e-4ec9-8b8c-870bad742811
+    <Name>k__BackingField: xx
+    <Speaker>k__BackingField: 0
+    _isMultipleChoice: 1
+    <Text>k__BackingField: Dialogue text.
+    <ChoicesInNode>k__BackingField:
+    - <Text>k__BackingField: New choice
+      <NodeID>k__BackingField: b3b890e8-bb8e-4808-ac1f-e69087eec420
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 1656, y: 378.66666}
+    <NextDialogueNodeID>k__BackingField: 
   <OldGroupNames>k__BackingField: []
   <OldUngroupedNodeNames>k__BackingField:
   - DialogueName
+  - x
+  - xx
   <OldGroupedNodeNames>k__BackingField:
     list: []

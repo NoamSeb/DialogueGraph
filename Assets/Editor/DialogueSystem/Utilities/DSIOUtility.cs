@@ -1,17 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DS.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
-namespace DS.Utilities
-{
-    using Data;
-    using Data.Save;
-    using Elements;
-    using ScriptableObjects;
-    using Windows;
 
     public static class DSIOUtility
     {
@@ -155,19 +148,22 @@ namespace DS.Utilities
 
         private static void SaveNodeToGraph(DSNode node, DSGraphSaveDataSO graphData)
         {
-            List<DSChoiceSaveData> choices = CloneNodeChoices(node.Choices);
+            List<DSChoiceSaveData> choices = CloneNodeChoices(node.Saves.ChoicesInNode);
 
             DSNodeSaveData nodeData = new DSNodeSaveData()
             {
                 ID = node.ID,
                 Name = node.DialogueName,
-                Choices = choices,
+                ChoicesInNode = choices,
                 Text = node.Text,
                 GroupID = node.Group?.ID,
                 DialogueType = node.DialogueType,
-                Position = node.GetPosition().position
+                Position = node.GetPosition().position,
+                isMultipleChoice = node.Saves.isMultipleChoice
             };
 
+            nodeData.SaveSpeaker(node.Speaker);
+            
             graphData.Nodes.Add(nodeData);
         }
 
@@ -191,9 +187,10 @@ namespace DS.Utilities
             dialogue.Initialize(
                 node.DialogueName,
                 node.Text,
-                ConvertNodeChoicesToDialogueChoices(node.Choices),
+                ConvertNodeChoicesToDialogueChoices(node.Saves.ChoicesInNode),
                 node.DialogueType,
-                node.IsStartingNode()
+                node.IsStartingNode(),
+                node.Speaker
             );
 
             createdDialogues.Add(node.ID, dialogue);
@@ -224,9 +221,9 @@ namespace DS.Utilities
             {
                 DSDialogueSO dialogue = createdDialogues[node.ID];
 
-                for (int choiceIndex = 0; choiceIndex < node.Choices.Count; ++choiceIndex)
+                for (int choiceIndex = 0; choiceIndex < node.Saves.ChoicesInNode.Count; ++choiceIndex)
                 {
-                    DSChoiceSaveData nodeChoice = node.Choices[choiceIndex];
+                    DSChoiceSaveData nodeChoice = node.Saves.ChoicesInNode[choiceIndex];
 
                     if (string.IsNullOrEmpty(nodeChoice.NodeID))
                     {
@@ -318,13 +315,16 @@ namespace DS.Utilities
         {
             foreach (DSNodeSaveData nodeData in nodes)
             {
-                List<DSChoiceSaveData> choices = CloneNodeChoices(nodeData.Choices);
+                List<DSChoiceSaveData> choices = CloneNodeChoices(nodeData.ChoicesInNode);
 
                 DSNode node = graphView.CreateNode(nodeData.Name, nodeData.DialogueType, nodeData.Position, false);
 
                 node.ID = nodeData.ID;
-                node.Choices = choices;
+                node.Saves.ChoicesInNode = choices;
                 node.Text = nodeData.Text;
+                node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
+
+                node.SetSpeaker(nodeData.Speaker);
 
                 node.Draw();
 
@@ -478,4 +478,3 @@ namespace DS.Utilities
             return choices;
         }
     }
-}

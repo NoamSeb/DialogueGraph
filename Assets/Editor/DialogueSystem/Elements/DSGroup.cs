@@ -2,8 +2,7 @@ using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace DS.Elements
-{
+
     public class DSGroup : Group
     {
         public string ID { get; set; }
@@ -37,4 +36,3 @@ namespace DS.Elements
             contentContainer.style.borderBottomWidth = defaultBorderWidth;
         }
     }
-}

@@ -1,5 +1,4 @@
-namespace DS.Enumerations
-{
+
     public enum DSDialogueType
     {
         SingleChoice,
@@ -7,4 +6,3 @@ namespace DS.Enumerations
         Start,
         End,
     }
-}

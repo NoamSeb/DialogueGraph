@@ -5,8 +5,7 @@ using Unity.GraphToolkit.Editor;
 using UnityEngine;
 
 
-namespace GraphView
-{
+
     [Serializable]
     public class StartNode : Node
     {
@@ -95,4 +94,3 @@ public class ChoiceNode : Node
             context.AddInputPort<ConditionsSC>("Condition").Build();
         }
     }
-}

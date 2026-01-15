@@ -5,23 +5,19 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DS.Elements
-{
-    using Data.Save;
-    using Enumerations;
-    using Utilities;
-    using Windows;
 
     public class DSNode : Node
     {
         public string ID { get; set; }
         public string DialogueName { get; set; }
-        public List<DSChoiceSaveData> Choices { get; set; }
+        public Espeaker Speaker { get; set; }
+        public DSNodeSaveData Saves { get; set; }
         public string Text { get; set; }
         public DSDialogueType DialogueType { get; set; }
         public DSGroup Group { get; set; }
 
         protected DSGraphView graphView;
+        
         private Color defaultBackgroundColor;
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -37,7 +33,8 @@ namespace DS.Elements
             ID = Guid.NewGuid().ToString();
 
             DialogueName = nodeName;
-            Choices = new List<DSChoiceSaveData>();
+            Saves = new DSNodeSaveData();
+            Saves.ChoicesInNode = new List<DSChoiceSaveData>();
             Text = "Dialogue text.";
 
             SetPosition(new Rect(position, Vector2.zero));
@@ -101,6 +98,13 @@ namespace DS.Elements
             );
 
             titleContainer.Insert(0, dialogueNameTextField);
+            
+            // DRAW ENUMERATOR ESPEAKER 
+            
+            EnumField speakerEnumField = new EnumField("", Speaker);
+            speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker) callback.newValue));
+            
+            titleContainer.Add(speakerEnumField);
 
             /* INPUT CONTAINER */
 
@@ -169,11 +173,17 @@ namespace DS.Elements
         public void SetErrorStyle(Color color)
         {
             mainContainer.style.backgroundColor = color;
+            Debug.Log("Set error style on node: " + DialogueName);
         }
 
         public void ResetStyle()
         {
             mainContainer.style.backgroundColor = defaultBackgroundColor;
         }
+        
+        public void SetSpeaker(Espeaker speaker)
+        {
+            Speaker = speaker;
+            Debug.Log("Speaker set to: " + Speaker);
+        }
     }
-}

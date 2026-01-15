@@ -4,21 +4,12 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DS.Windows
-{
-    using Data.Error;
-    using Data.Save;
-    using Elements;
-    using Enumerations;
-    using Utilities;
-
     public class DSGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         private DSEditorWindow editorWindow;
         private DSSearchWindow searchWindow;
 
         private MiniMap miniMap;
-
         private SerializableDictionary<string, DSNodeErrorData> ungroupedNodes;
         private SerializableDictionary<string, DSGroupErrorData> groups;
         private SerializableDictionary<Group, SerializableDictionary<string, DSNodeErrorData>> groupedNodes;
@@ -151,25 +142,10 @@ namespace DS.Windows
             return group;
         }
         
-        public DSNode CreateNode(string nodeName, Vector2 position, bool shouldDraw = true)
-        {
-            DSNode node = new DSNode();
-
-            node.Initialize(nodeName, this, position);
-
-            if (shouldDraw)
-            {
-                node.Draw();
-            }
-
-            AddUngroupedNode(node);
-
-            return node;
-        }
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
-            Type nodeType = Type.GetType($"DS.Elements.DS{dialogueType}Node");
-
+            Type nodeType = Type.GetType($"DS{dialogueType}Node");
+            
             DSNode node = (DSNode) Activator.CreateInstance(nodeType);
 
             node.Initialize(nodeName, this, position);
@@ -636,4 +612,3 @@ namespace DS.Windows
             miniMap.visible = !miniMap.visible;
         }
     }
-}
