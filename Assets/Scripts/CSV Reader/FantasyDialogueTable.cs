@@ -12,6 +12,7 @@ public static class FantasyDialogueTable
 
 	private static string _pathToLoadCsv = "CSV/FantasyDialogue";
 	private static TextAsset _currentCsv;
+	public static LocalManager LocalManager = new LocalManager();
 
 	public class Row
 	{
@@ -33,7 +34,7 @@ public static class FantasyDialogueTable
 		return rowList;
 	}
 
-	private static TextAsset GetCsvFromFile()
+	public static TextAsset GetCsvFromFile()
 	{
 		TextAsset csv = Resources.Load<TextAsset>(_pathToLoadCsv);
 		return csv;
@@ -41,7 +42,6 @@ public static class FantasyDialogueTable
 
 	public static void Load()
 	{
-
 		_currentCsv = GetCsvFromFile();
 		if (_currentCsv !=  null)
 		{
@@ -65,6 +65,7 @@ public static class FantasyDialogueTable
 
 		}
 		isLoaded = true;
+		LocalManager.InitDico();
 	}
 
 	public static int NumRows()
@@ -116,3 +117,70 @@ public static class FantasyDialogueTable
 		return keys;
 	}
 }
+
+public class LocalManager
+{
+	public Dictionary<string, Dictionary<string, string>> idLangLink = new();
+	
+	TextAsset _currentCsv;
+	public void InitDico()
+	{
+		_currentCsv = FantasyDialogueTable.GetCsvFromFile();
+		if (_currentCsv !=  null)
+		{
+			Debug.Log($"CURRENT CSV FOUND : {_currentCsv.text}");
+		}else
+		{
+			Debug.Log($"CURRENT CSV NOT FOUND");
+			return;
+		}
+		string[][] grid = CsvParser2.Parse(_currentCsv.text);
+		// 0 Liste de ligne
+		// 1 Liste de colonne
+		// 2 Liste de valeur
+
+		for (int i = 0; grid.Length > i; i++)
+		{
+			Dictionary<string, string> tempDico = new Dictionary<string, string>();
+			for (int j = 0; j < grid[i].Length; j++)
+			{
+				tempDico.Add(grid[0][j], grid[i][j]);
+			}
+			idLangLink.Add(grid[i][0],tempDico);
+		}
+		
+		Debug.Log("Test");
+	}
+	
+	public string FindDialogue(string key, string local)
+	{
+		Dictionary<string, string> DicoFromKey;
+		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
+		string foundValue;
+		DicoFromKey.TryGetValue(local, out foundValue);
+		
+		return foundValue;
+	}
+	
+	public List<string> FindAllDialogueForKey(string key)
+	{
+		Dictionary<string, string> DicoFromKey;
+		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
+		Dictionary<string, string> Locals;
+		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue("idLng", out Locals);
+		List<string> foundList = new();
+		
+		foreach (KeyValuePair<string, string> KVP in Locals)
+		{
+			if(KVP.Value == "idLng")
+				continue;
+			string local = KVP.Value;
+			
+			DicoFromKey.TryGetValue(local, out string foundValue);
+			foundList.Add(foundValue);
+		}
+		
+		return foundList;
+	}
+}
+

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using NaughtyAttributes;
+using UnityEngine.SocialPlatforms;
 
 public class DialogueManager : MonoBehaviour
 {
