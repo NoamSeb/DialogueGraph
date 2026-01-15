@@ -159,7 +159,8 @@ using UnityEngine;
                 GroupID = node.Group?.ID,
                 DialogueType = node.DialogueType,
                 Position = node.GetPosition().position,
-                isMultipleChoice = node.Saves.isMultipleChoice
+                isMultipleChoice = node.Saves.isMultipleChoice,
+                ConditionsMap = node.Saves.ConditionsMap,
             };
 
             nodeData.SaveSpeaker(node.Speaker);
@@ -323,6 +324,7 @@ using UnityEngine;
                 node.Saves.ChoicesInNode = choices;
                 node.Text = nodeData.Text;
                 node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
+                node.Saves.ConditionsMap = nodeData.ConditionsMap;
 
                 node.SetSpeaker(nodeData.Speaker);
 

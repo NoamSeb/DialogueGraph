@@ -149,6 +149,7 @@ using UnityEngine.UIElements;
             DSNode node = (DSNode) Activator.CreateInstance(nodeType);
 
             node.Initialize(nodeName, this, position);
+            
 
             if (shouldDraw)
             {

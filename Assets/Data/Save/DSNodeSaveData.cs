@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 
 [Serializable]
@@ -23,6 +25,9 @@ using UnityEngine.Serialization;
         }
         
         public bool isMultipleChoice = false;
+        
+        public Dictionary<Port, List<VisualElement>> ConditionsMap = new Dictionary<Port, List<VisualElement>>();
+
         [field: SerializeField] public string Text { get; set; }
         [field: SerializeField] public List<DSChoiceSaveData> ChoicesInNode { get; set; }
         [field: SerializeField] public string GroupID { get; set; }

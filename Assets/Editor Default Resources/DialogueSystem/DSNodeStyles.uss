@@ -96,6 +96,15 @@
 	max-height: var(--ds-metrics-window-pixels-25);
 }
 
+
+.ds-node__buttonDelete
+{
+	background-color: var(--ds-colors-window-dark-grey-9);
+	border-color: var(--ds-colors-window-dark-grey-1);
+	margin: var(--ds-metrics-window-pixels-4);
+	max-height: var(--ds-metrics-window-pixels-25);
+}
+
 .ds-node__buttonSingle
 {
 	background-color: var(--ds-colors-window-dark-grey-7);
@@ -147,4 +156,13 @@ TextField
 .unity-toggle__text
 {
 	margin-left: var(--ds-metrics-window-pixels-2);
+}
+
+.ds-node__conditions-field {
+	margin-left: 16px;
+	margin-top: 4px;
+}
+
+.ds-node__conditions-container {
+	padding-bottom: 4px;
 }
