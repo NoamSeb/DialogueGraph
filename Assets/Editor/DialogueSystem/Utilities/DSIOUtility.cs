@@ -193,7 +193,6 @@ public static class DSIOUtility
             };
 
             nodeData.SaveDropDownKeyDialogue(node.Saves.GetDropDownKeyDialogue());
-            Debug.Log("Saving Node Dialogue Key = " + node.Saves.GetDropDownKeyDialogue());
             nodeData.SaveSpeaker(node.Speaker);
             nodeData.SetChoices(choices);
 

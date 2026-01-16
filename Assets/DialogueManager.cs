@@ -13,6 +13,8 @@ public enum language
     FR,
     EN,
 }
+
+
 public class DialogueManager : MonoBehaviour
 {
     public DSGraphSaveDataSO runtimeGraph;
@@ -21,9 +23,9 @@ public class DialogueManager : MonoBehaviour
     
     [SerializeField] private language languageSetting = language.FR;
 
-    [Header("UI Elements")] public GameObject dialoguePanel;
-    public TextMeshProUGUI SpeakerNameText;
-    public TextMeshProUGUI DialogueText;
+    [Header("UI Elements")]
+    
+   // private Dictionary<>
 
     [Header("Choice Button UI")] public Button ChoiceButtonPrefab;
     public Transform ChoiceButtonContainer;
