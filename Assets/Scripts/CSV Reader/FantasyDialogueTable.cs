@@ -117,9 +117,12 @@ public static class FantasyDialogueTable
 
         foreach (Row row in rowList)
         {
-            if (SpeakerName != null && row.idLng.StartsWith(SpeakerName))
+            if (SpeakerName != null)
             {
-                keys.Add(row.idLng);
+                if (row.idLng.StartsWith(SpeakerName))
+                {
+                    keys.Add(row.idLng);
+                }
             }
             else
             {
