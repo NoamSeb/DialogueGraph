@@ -995,6 +995,7 @@ MonoBehaviour:
   dialoguePanel: {fileID: 545183473}
   SpeakerNameText: {fileID: 151663469}
   DialogueText: {fileID: 61481419}
+  SpriteSpeakerHumeur: {fileID: 0}
   ChoiceButtonPrefab: {fileID: 2450449145640451282, guid: 33e1f0b39949b554d88cca2bf0a29d93, type: 3}
   ChoiceButtonContainer: {fileID: 1927992912}
   SpeakersScriptable: {fileID: 11400000, guid: 82e282dbd1d6b8c4d845bae0b97efb89, type: 2}
