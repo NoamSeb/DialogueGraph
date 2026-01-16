@@ -129,7 +129,12 @@ public class DialogueManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        
+        CreateButtonsChoice();
+    }
 
+    private void CreateButtonsChoice()
+    {
         if (_currentNode.choicesInNode.Count > 1)
         {
             _isWaitingForChoice = true;
@@ -142,7 +147,6 @@ public class DialogueManager : MonoBehaviour
                     _isWaitingForChoice = false;
                     Debug.Log("Player selected choice leading to Node ID: " + choice.NodeID);
                     ShowNode(choice.NodeID);
-                    
                 });
 
                 TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
