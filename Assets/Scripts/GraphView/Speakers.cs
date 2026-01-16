@@ -11,16 +11,6 @@ public class Speakers : ScriptableObject
 public enum Espeaker
 {
     None,
-    Noam,
-    Gab,
-    Margot
-}
-
-
-
-[System.Serializable]
-public enum EUIDisposition
-{
-    classique,
-    envers
+    Brant,
+    Juliana
 }

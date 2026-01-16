@@ -9,213 +9,235 @@ using Unity.VisualScripting;
 [ExecuteAlways]
 public static class FantasyDialogueTable
 {
+    private static string _pathToLoadCsv = "CSV/FantasyDialogue";
+    private static TextAsset _currentCsv;
+    public static LocalManager LocalManager = new LocalManager();
 
-	private static string _pathToLoadCsv = "CSV/FantasyDialogue";
-	private static TextAsset _currentCsv;
-	public static LocalManager LocalManager = new LocalManager();
+    public class Row
+    {
+        public string idLng;
+        public string FR;
+        public string EN;
+    }
 
-	public class Row
-	{
-		public string idLng;
-		public string FR;
-		public string EN;
-	}
+    static List<Row> rowList = new List<Row>();
+    static bool isLoaded = false;
 
-	static List<Row> rowList = new List<Row>();
-	static bool isLoaded = false;
-	
-	public static bool IsLoaded()
-	{
-		return isLoaded;
-	}
+    public static bool IsLoaded()
+    {
+        return isLoaded;
+    }
 
-	public static List<Row> GetRowList()
-	{
-		return rowList;
-	}
+    public static List<Row> GetRowList()
+    {
+        return rowList;
+    }
 
-	public static TextAsset GetCsvFromFile()
-	{
-		TextAsset csv = Resources.Load<TextAsset>(_pathToLoadCsv);
-		return csv;
-	}
+    public static TextAsset GetCsvFromFile()
+    {
+        TextAsset csv = Resources.Load<TextAsset>(_pathToLoadCsv);
+        return csv;
+    }
 
-	public static void Load()
-	{
-		if(rowList.Count > 0)
-			return;
-		_currentCsv = GetCsvFromFile();
-		if (_currentCsv !=  null)
-		{
-		}else
-		{
-			Debug.Log($"CURRENT CSV NOT FOUND");
-                return;
+    public static void Load()
+    {
+        if (rowList.Count > 0)
+            return;
+        _currentCsv = GetCsvFromFile();
+        if (_currentCsv != null)
+        {
         }
-		
-		rowList.Clear();
-		string[][] grid = CsvParser2.Parse(_currentCsv.text);
-		for(int i = 1 ; i < grid.Length ; i++)
-		{
-			Row row = new Row();
-			row.idLng = grid[i][0];
-			row.FR = grid[i][1];
-			row.EN = grid[i][2];
+        else
+        {
+            Debug.Log($"CURRENT CSV NOT FOUND");
+            return;
+        }
 
-			rowList.Add(row);
-		}
-		isLoaded = true;
-		LocalManager.InitDico();
-	}
+        rowList.Clear();
+        string[][] grid = CsvParser2.Parse(_currentCsv.text);
+        for (int i = 1; i < grid.Length; i++)
+        {
+            Row row = new Row();
+            row.idLng = grid[i][0];
+            row.FR = grid[i][1];
+            row.EN = grid[i][2];
 
-	public static int NumRows()
-	{
-		return rowList.Count;
-	}
+            rowList.Add(row);
+        }
 
-	public static Row GetAt(int i)
-	{
-		if(rowList.Count <= i)
-			return null;
-		return rowList[i];
-	}
+        isLoaded = true;
+        LocalManager.InitDico();
+    }
 
-	public static Row Find_idLng(string find)
-	{
-		return rowList.Find(x => x.idLng == find);
-	}
-	public static List<Row> FindAll_idLng(string find)
-	{
-		return rowList.FindAll(x => x.idLng == find);
-	}
-	public static Row Find_FR(string find)
-	{
-		return rowList.Find(x => x.FR == find);
-	}
-	public static List<Row> FindAll_FR(string find)
-	{
-		return rowList.FindAll(x => x.FR == find);
-	}
-	public static Row Find_EN(string find)
-	{
-		return rowList.Find(x => x.EN == find);
-	}
-	public static List<Row> FindAll_EN(string find)
-	{
-		return rowList.FindAll(x => x.EN == find);
-	}
+    public static int NumRows()
+    {
+        return rowList.Count;
+    }
 
-	public static List<string> FindAll_Keys()
-	{
-		List<string> keys = new List<string>();
-   
-		foreach (Row row in rowList)
-		{
-			keys.Add(row.idLng);
-		}
+    public static Row GetAt(int i)
+    {
+        if (rowList.Count <= i)
+            return null;
+        return rowList[i];
+    }
 
-		return keys;
-	}
+    public static Row Find_idLng(string find)
+    {
+        return rowList.Find(x => x.idLng == find);
+    }
+
+    public static List<Row> FindAll_idLng(string find)
+    {
+        return rowList.FindAll(x => x.idLng == find);
+    }
+
+    public static Row Find_FR(string find)
+    {
+        return rowList.Find(x => x.FR == find);
+    }
+
+    public static List<Row> FindAll_FR(string find)
+    {
+        return rowList.FindAll(x => x.FR == find);
+    }
+
+    public static Row Find_EN(string find)
+    {
+        return rowList.Find(x => x.EN == find);
+    }
+
+    public static List<Row> FindAll_EN(string find)
+    {
+        return rowList.FindAll(x => x.EN == find);
+    }
+
+    public static List<string> FindAll_Keys(string SpeakerName = null)
+    {
+        List<string> keys = new List<string>();
+
+        foreach (Row row in rowList)
+        {
+            if (SpeakerName != null)
+            {
+                if (row.idLng.StartsWith(SpeakerName))
+                {
+                    keys.Add(row.idLng);
+                }
+            }
+            else
+            {
+                keys.Add(row.idLng);
+            }
+        }
+
+        return keys;
+    }
 }
 
 public class LocalManager
 {
-	public Dictionary<string, Dictionary<string, string>> idLangLink = new();
-	
-	TextAsset _currentCsv;
-	public void InitDico()
-	{
-		_currentCsv = FantasyDialogueTable.GetCsvFromFile();
-		if (_currentCsv ==  null)
-		{
-			Debug.Log($"CURRENT CSV NOT FOUND");
-			return;
-		}
-		string[][] grid = CsvParser2.Parse(_currentCsv.text);
-		// 0 Liste de ligne
-		// 1 Liste de colonne
-		// 2 Liste de valeur
+    public Dictionary<string, Dictionary<string, string>> idLangLink = new();
 
-		for (int i = 0; grid.Length > i; i++)
-		{
-			Dictionary<string, string> tempDico = new Dictionary<string, string>();
-			for (int j = 0; j < grid[i].Length; j++)
-			{
-				tempDico.Add(grid[0][j], grid[i][j]);
-			}
-			idLangLink.Add(grid[i][0],tempDico);
-		}
-	}
-	
-	public string FindDialogue(string key, string local)
-	{
-		// Example: key = "GREETING", local = "FR"
-		
-		Debug.Log("Finding dialogue for key: " + key + " and local: " + local);
-		Debug.Log("ID LANG LINGK COUNT = "+idLangLink.Count);
-		Dictionary<string, string> DicoFromKey;
-		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
-		string foundValue = "";
-		if (DicoFromKey != null)
-		{
-			DicoFromKey.TryGetValue(local, out foundValue);
-		}
-		else
-		{
-			Debug.Log("DICO IS NULL");
-		}
-		return foundValue;
-	}
-	
-	public List<string> FindAllDialogueForKey(string key)
-	{
-		Dictionary<string, string> DicoFromKey;
-		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
-		Dictionary<string, string> Locals;
-		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue("idLng", out Locals);
-		List<string> foundList = new();
-		
-		foreach (KeyValuePair<string, string> KVP in Locals)
-		{
-			if(KVP.Value == "idLng")
-				continue;
-			string local = KVP.Value;
-			
-			DicoFromKey.TryGetValue(local, out string foundValue);
-			foundList.Add(foundValue);
-		}
-		
-		return foundList;
-	}
-	
-	public string GetAllDialogueFromValue(string key)
-	{
-		try
-		{
-			List<string> values = FindAllDialogueForKey(key);
-			List<string> locals = FindAllDialogueForKey("idLng");
-			string result = "";
-			for (var index = 0; index < locals.Count; index++)
-			{
-				result += $" {locals[index]} : {values[index]}";
-				if (index != locals.Count - 1)
-					result += "\n";
-			}
+    TextAsset _currentCsv;
 
-			return result;
-		}
-		catch
-		{
-			try
-			{
-				var entry = FantasyDialogueTable.Find_idLng(key);
-				return $"FR : {entry.FR}";
-			}
-			catch
-			{
-				return $"Key: {key}";
-			}
-		}
-	}
+    public void InitDico()
+    {
+        _currentCsv = FantasyDialogueTable.GetCsvFromFile();
+        if (_currentCsv == null)
+        {
+            Debug.Log($"CURRENT CSV NOT FOUND");
+            return;
+        }
+
+        string[][] grid = CsvParser2.Parse(_currentCsv.text);
+        // 0 Liste de ligne
+        // 1 Liste de colonne
+        // 2 Liste de valeur
+
+        for (int i = 0; grid.Length > i; i++)
+        {
+            Dictionary<string, string> tempDico = new Dictionary<string, string>();
+            for (int j = 0; j < grid[i].Length; j++)
+            {
+                tempDico.Add(grid[0][j], grid[i][j]);
+            }
+
+            idLangLink.Add(grid[i][0], tempDico);
+        }
+    }
+
+    public string FindDialogue(string key, string local)
+    {
+        // Example: key = "GREETING", local = "FR"
+
+        Debug.Log("Finding dialogue for key: " + key + " and local: " + local);
+        Debug.Log("ID LANG LINGK COUNT = " + idLangLink.Count);
+        Dictionary<string, string> DicoFromKey;
+        FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
+        string foundValue = "";
+        if (DicoFromKey != null)
+        {
+            DicoFromKey.TryGetValue(local, out foundValue);
+        }
+        else
+        {
+            Debug.Log("DICO IS NULL");
+        }
+
+        return foundValue;
+    }
+
+    public List<string> FindAllDialogueForKey(string key)
+    {
+        Dictionary<string, string> DicoFromKey;
+        FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
+        Dictionary<string, string> Locals;
+        FantasyDialogueTable.LocalManager.idLangLink.TryGetValue("idLng", out Locals);
+        List<string> foundList = new();
+        Debug.Log("Finding all dialogues for key: " + key + " with " + Locals.Count + " locals.");
+
+        foreach (KeyValuePair<string, string> KVP in Locals)
+        {
+            if (KVP.Value == "idLng")
+                continue;
+            string local = KVP.Value;
+
+            DicoFromKey.TryGetValue(local, out string foundValue);
+            foundList.Add(foundValue);
+        }
+
+        return foundList;
+    }
+
+    public string GetAllDialogueFromValue(string key)
+    {
+        try
+        {
+            List<string> values = FindAllDialogueForKey(key);
+            List<string> locals = FindAllDialogueForKey("idLng");
+            string result = "";
+            for (var index = 0; index < locals.Count; index++)
+            {
+                result += $" {locals[index]} : {values[index]}";
+                if (index != locals.Count - 1)
+                    result += "\n";
+            }
+
+            return result;
+        }
+        catch
+        {
+            
+            try
+            {
+                var entry = FantasyDialogueTable.Find_idLng(key);
+                return $"FR : {entry.FR}";
+            }
+            catch
+            {
+                
+                return $"Key: {key}";
+            }
+        }
+    }
 }
-

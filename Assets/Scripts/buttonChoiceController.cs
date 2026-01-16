@@ -19,15 +19,15 @@ public class buttonChoiceController : MonoBehaviour
         _button = GetComponent<Button>();
     }
 
-    public void InitializeButtonChoiceController(bool locked, string text)
+    public void InitializeButtonChoiceController(bool fillCondition, string text)
     {
-        lockState = locked;
+        lockState = !fillCondition;
         buttonText.SetText(text);
         if(_button == null) _button = GetComponent<Button>();
-        _button.interactable = !locked;
+        _button.interactable = !lockState;
         
         if(_animator == null) _animator = GetComponent<Animator>();
-        _animator.SetBool("Locked", locked);
+        _animator.SetBool("Locked", lockState);
     }
     
     public void OnClicked()
