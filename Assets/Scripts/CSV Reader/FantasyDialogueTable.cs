@@ -42,15 +42,17 @@ public static class FantasyDialogueTable
 
 	public static void Load()
 	{
+		if(rowList.Count > 0)
+			return;
 		_currentCsv = GetCsvFromFile();
 		if (_currentCsv !=  null)
 		{
-			Debug.Log($"CURRENT CSV FOUND : {_currentCsv.text}");
 		}else
 		{
 			Debug.Log($"CURRENT CSV NOT FOUND");
                 return;
         }
+		
 		rowList.Clear();
 		string[][] grid = CsvParser2.Parse(_currentCsv.text);
 		for(int i = 1 ; i < grid.Length ; i++)
@@ -61,8 +63,6 @@ public static class FantasyDialogueTable
 			row.EN = grid[i][2];
 
 			rowList.Add(row);
-			Debug.Log($"ADD ROW {rowList.Count}");
-
 		}
 		isLoaded = true;
 		LocalManager.InitDico();
@@ -126,10 +126,7 @@ public class LocalManager
 	public void InitDico()
 	{
 		_currentCsv = FantasyDialogueTable.GetCsvFromFile();
-		if (_currentCsv !=  null)
-		{
-			Debug.Log($"CURRENT CSV FOUND : {_currentCsv.text}");
-		}else
+		if (_currentCsv ==  null)
 		{
 			Debug.Log($"CURRENT CSV NOT FOUND");
 			return;
@@ -148,8 +145,6 @@ public class LocalManager
 			}
 			idLangLink.Add(grid[i][0],tempDico);
 		}
-		
-		Debug.Log("Test");
 	}
 	
 	public string FindDialogue(string key, string local)
@@ -181,6 +176,36 @@ public class LocalManager
 		}
 		
 		return foundList;
+	}
+	
+	public string GetAllDialogueFromValue(string key)
+	{
+		try
+		{
+			List<string> values = FindAllDialogueForKey(key);
+			List<string> locals = FindAllDialogueForKey("idLng");
+			string result = "";
+			for (var index = 0; index < locals.Count; index++)
+			{
+				result += $" {locals[index]} : {values[index]}";
+				if (index != locals.Count - 1)
+					result += "\n";
+			}
+
+			return result;
+		}
+		catch
+		{
+			try
+			{
+				var entry = FantasyDialogueTable.Find_idLng(key);
+				return $"FR : {entry.FR}";
+			}
+			catch
+			{
+				return $"Key: {key}";
+			}
+		}
 	}
 }
 

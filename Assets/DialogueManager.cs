@@ -49,7 +49,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame && _currentNode != null && _currentNode.ChoicesInNode.Count == 0)
+        if (Mouse.current.leftButton.wasPressedThisFrame && _currentNode != null && _currentNode.choicesInNode.Count == 0)
         {
             if (!string.IsNullOrEmpty(_currentNode.NextDialogueNodeID))
             {
@@ -84,9 +84,9 @@ public class DialogueManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (_currentNode.ChoicesInNode.Count > 0)
+        if (_currentNode.choicesInNode.Count > 0)
         {
-            foreach (DSChoiceSaveData choice in _currentNode.ChoicesInNode)
+            foreach (DSChoiceSaveData choice in _currentNode.choicesInNode)
             {
                 Button choiceButton = Instantiate(ChoiceButtonPrefab, ChoiceButtonContainer);
 

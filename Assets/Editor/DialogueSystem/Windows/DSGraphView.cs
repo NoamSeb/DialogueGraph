@@ -144,19 +144,22 @@ using UnityEngine.UIElements;
         
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
-            
-            Type nodeType = Type.GetType($"DS{dialogueType}Node");
+            FantasyDialogueTable.Load();
+
+           Type nodeType = Type.GetType($"DS{dialogueType}Node");
             if (nodeType == null)
             {
                 throw new Exception($"Node type for dialogue type {dialogueType} not found");
             }
             
+           
             DSNode node = (DSNode) Activator.CreateInstance(nodeType);
             if (node == null)
             {
                 throw new Exception($"Failed to create node of type {nodeType}");
             }
-
+            
+           
             node.Initialize(nodeName, this, position);
 
             if (shouldDraw)
@@ -356,6 +359,14 @@ using UnityEngine.UIElements;
 
         public void AddUngroupedNode(DSNode node)
         {
+            if(node == null)
+            {
+                throw new ArgumentNullException(nameof(node), "Node cannot be null");
+            }
+            if(string.IsNullOrEmpty(node.DialogueName))
+            {
+                return;
+            }
             string nodeName = node.DialogueName.ToLower();
 
             if (!ungroupedNodes.ContainsKey(nodeName))
