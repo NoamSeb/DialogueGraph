@@ -10,10 +10,8 @@ public class DSNode : Node
     public string ID { get; set; }
     public string DialogueName { get; set; }
     public Espeaker Speaker { get; set; }
-    
+    public bubleType BubleType { get; set; }
     public HumeurSpeaker Humeur { get; set; }
-    
-    public EUIDisposition UISpeaker { get; set; }
     public DSNodeSaveData Saves { get; set; }
     public string Text { get; set; }
 
@@ -108,17 +106,17 @@ public class DSNode : Node
 
         titleContainer.Insert(0, dialogueNameTextField);
 
-        EnumField speakerEnumField = new EnumField("", Speaker);
+        EnumField speakerEnumField = new EnumField("Character : ", Speaker);
         speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker)callback.newValue));
         titleContainer.Add(speakerEnumField);
         
         
-        EnumField humeurEnumField = new EnumField("", Humeur);
+        EnumField humeurEnumField = new EnumField("Mood : ", Humeur);
         humeurEnumField.RegisterValueChangedCallback(callback => SetHumeur((HumeurSpeaker)callback.newValue));
         titleContainer.Add(humeurEnumField);
         
-        EnumField UISpeakerEnumField = new EnumField("", UISpeaker);
-        UISpeakerEnumField.RegisterValueChangedCallback(callback => SetUIDispo((EUIDisposition)callback.newValue));
+        EnumField UISpeakerEnumField = new EnumField("Buble type : ", BubleType);
+        UISpeakerEnumField.RegisterValueChangedCallback(callback => BubleType = ((bubleType)callback.newValue));
         titleContainer.Add(UISpeakerEnumField);
         
 
@@ -256,6 +254,7 @@ public class DSNode : Node
 
         List<string> keys = FantasyDialogueTable.FindAll_Keys(speakerName);
         Debug.Log(keys.Count);
+        if(_dropdownFieldDialogue == null) return;
         _dropdownFieldDialogue.choices.Clear();
         foreach (string key in keys)
         {
@@ -267,9 +266,5 @@ public class DSNode : Node
     {
         Humeur = humeur;
     }
-    
-    public void SetUIDispo(EUIDisposition uiDisposition)
-    {
-        UISpeaker = uiDisposition;
-    }
+
 }

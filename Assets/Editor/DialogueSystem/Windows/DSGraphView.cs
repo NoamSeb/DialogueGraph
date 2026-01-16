@@ -105,7 +105,7 @@ using UnityEngine.UIElements;
 
             this.AddManipulator(CreateNodeContextualMenu("Add Node (Multiple Choice)", DSDialogueType.MultipleChoice));
             this.AddManipulator(CreateNodeContextualMenu("Start",DSDialogueType.Start));
-            this.AddManipulator(CreateNodeContextualMenu("Node",DSDialogueType.End));
+            this.AddManipulator(CreateNodeContextualMenu("End",DSDialogueType.End));
  
             this.AddManipulator(CreateGroupContextualMenu());
         }

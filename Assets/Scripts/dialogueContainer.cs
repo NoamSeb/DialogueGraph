@@ -6,11 +6,13 @@ public class dialogueContainer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI speakerNameText;
-    public void InitializeDialogueContainer(string dialogue, string speakerName, Sprite characterSprite = null)
+    [SerializeField] private Image characterImage;
+    public void InitializeDialogueContainer(string dialogue, string speakerName, Sprite characterSprite)
     {
         var childContainer = transform.GetChild(0);
         if (childContainer == null) return;
         childContainer.gameObject.SetActive(true);
+        characterImage.sprite = characterSprite;
         
         dialogueText.SetText(dialogue);
         speakerNameText.SetText(speakerName);

@@ -14,6 +14,17 @@ public class SpeakerInfo
     public HumeurSpeaker Humeur;
     public List<SpriteHumeur> SpritesHumeur;
     
+    public Sprite GetSpriteForHumeur(HumeurSpeaker humeur)
+    {
+        foreach (var spriteHumeur in SpritesHumeur)
+        {
+            if (spriteHumeur.humeur == humeur)
+            {
+                return spriteHumeur.sprite;
+            }
+        }
+        return null;
+    }
 }
 
 [System.Serializable]
@@ -25,7 +36,7 @@ public class SpriteHumeur
 
 public enum HumeurSpeaker
 {
-    Neutre,
+    Colere,
     Joie,
     Triste
 }

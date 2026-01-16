@@ -48,6 +48,8 @@ public class DialogueManager : MonoBehaviour
     private dialogueContainer _currentDialogueContainer;
     private dialogueContainer _oldDialogueContainer;
 
+    private DSNodeSaveData _endNode; 
+
     [Button]
     public void LoadCsv()
     {
@@ -57,7 +59,6 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         // ON FAIT CA EN BRUT PRCQ NSM
-        
         _bubleContainers.Add(bubleType.NORMAL, _bubleContainerList[0]);
         _bubleContainers.Add(bubleType.THINK, _bubleContainerList[1]);
         _bubleContainers.Add(bubleType.SHOUT, _bubleContainerList[2]);
@@ -72,7 +73,8 @@ public class DialogueManager : MonoBehaviour
             Debug.Log("Adding Node ID to Lookup: " + node.ID);
             _nodeLookup[node.ID] = node;
         }
-        
+
+        _endNode = GetNodeEnd();
         _currentNode = GetNextNode(GetNodeStart().choicesInNode[0].NodeID);
         
         if (_currentNode == null)
@@ -131,7 +133,7 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
             return;
         }
-
+        
         _currentNode = value;
         if (_currentNode == null)
         {
@@ -139,10 +141,33 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
             return;
         }
-        
+
+        if (_endNode == _currentNode)
+        {
+            Debug.Log("Reached End Node. Ending dialogue.");
+            EndDialogue();
+            return;
+        }
+
+
+        if (_bubleContainers.TryGetValue(_currentNode.GetBubleType(), out var container))
+        {
+            _currentDialogueContainer = container;
+        }
+        else
+        {
+            Debug.Log("Buble type not found for Node ID: " + nodeID);
+            return;
+        }
+        if(_oldDialogueContainer != null)
+        {
+            _oldDialogueContainer.HideContainer();
+        }
+        _oldDialogueContainer = _currentDialogueContainer;
+
         ChangeSpeaker(_currentNode.Speaker);
         string target = FantasyDialogueTable.LocalManager.FindDialogue(_currentNode.GetDropDownKeyDialogue(), Enum.GetName(typeof(language), languageSetting));
-        _currentDialogueContainer.InitializeDialogueContainer(target, _currentSpeaker.Name);
+        _currentDialogueContainer.InitializeDialogueContainer(target, _currentSpeaker.Name, _currentSpeaker.GetSpriteForHumeur(_currentNode.GetHumeur()));
 
         foreach (Transform child in ChoiceButtonContainer)
         {
@@ -219,15 +244,13 @@ public class DialogueManager : MonoBehaviour
     private void SetNewSpeaker(SpeakerInfo speaker)
     {
         _currentSpeaker = speaker;
-        SpeakerNameText.SetText(_currentSpeaker.Name);
-
-        foreach (var humeur in _currentSpeaker.SpritesHumeur)
-        {
-            if (_currentNode.Humeur == humeur.humeur)
-            {
-                SpriteSpeakerHumeur.sprite = humeur.sprite;
-            }
-        }
+        // foreach (var humeur in _currentSpeaker.SpritesHumeur)
+        // {
+        //     if (_currentNode.Humeur == humeur.humeur)
+        //     {
+        //         SpriteSpeakerHumeur.sprite = humeur.sprite;
+        //     }
+        // }
     }
 
     private DSNodeSaveData GetNodeStart()
@@ -235,6 +258,18 @@ public class DialogueManager : MonoBehaviour
         foreach (var node in runtimeGraph.Nodes)
         {
             if (node.DialogueType == DSDialogueType.Start)
+            {
+                return node;
+            }
+        }
+        return null;
+    }
+    
+    private DSNodeSaveData GetNodeEnd()
+    {
+        foreach (var node in runtimeGraph.Nodes)
+        {
+            if (node.DialogueType == DSDialogueType.End)
             {
                 return node;
             }

@@ -15,59 +15,35 @@ MonoBehaviour:
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
   <Nodes>k__BackingField:
-  - <ID>k__BackingField: 67d75f67-04d2-4935-b827-7279e467de44
+  - <ID>k__BackingField: 031f0405-af68-4e92-8258-bd7d72104a07
     <Name>k__BackingField: START
     <Speaker>k__BackingField: 0
+    BubleType: 0
+    Humeur: 0
     isMultipleChoice: 0
     <choicesInNode>k__BackingField:
-    - NodeID: 5ad9d603-7b9c-486d-9ef7-63b3784b5f8e
+    - NodeID: 562c9228-ecc2-47bf-b2bf-f192cba81111
       _dropDownKeyChoice: 
       <Conditions>k__BackingField: []
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 1
-    <Position>k__BackingField: {x: 620, y: 335.33334}
-  - <ID>k__BackingField: 50b4e0c5-49fe-445a-b2be-44213eec85c9
-    <Name>k__BackingField: DialogueNamenext
-    <Speaker>k__BackingField: 2
-    isMultipleChoice: 0
-    <choicesInNode>k__BackingField:
-    - NodeID: 
-      _dropDownKeyChoice: 
-      <Conditions>k__BackingField: []
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1808.6666, y: 254.66666}
-  - <ID>k__BackingField: 940400db-93c7-4a35-b505-622a31a46a06
-    <Name>k__BackingField: xx
-    <Speaker>k__BackingField: 1
-    isMultipleChoice: 0
-    <choicesInNode>k__BackingField:
-    - NodeID: 
-      _dropDownKeyChoice: 
-      <Conditions>k__BackingField: []
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1830, y: 493.3333}
-  - <ID>k__BackingField: 5ad9d603-7b9c-486d-9ef7-63b3784b5f8e
+    <Position>k__BackingField: {x: 900, y: 375.33334}
+  - <ID>k__BackingField: 562c9228-ecc2-47bf-b2bf-f192cba81111
     <Name>k__BackingField: DialogueName
     <Speaker>k__BackingField: 1
-    isMultipleChoice: 1
+    BubleType: 2
+    Humeur: 0
+    isMultipleChoice: 0
     <choicesInNode>k__BackingField:
-    - NodeID: 50b4e0c5-49fe-445a-b2be-44213eec85c9
-      _dropDownKeyChoice: Brant_D1
-      <Conditions>k__BackingField:
-      - {fileID: 11400000, guid: e601c92e8f8344b42bbcf5c8044b7e4d, type: 2}
-    - NodeID: 940400db-93c7-4a35-b505-622a31a46a06
-      _dropDownKeyChoice: Brant_D1
+    - NodeID: 
+      _dropDownKeyChoice: 
       <Conditions>k__BackingField: []
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 969.3333, y: 335.33334}
+    <Position>k__BackingField: {x: 1190.6666, y: 375.33334}
   <OldGroupNames>k__BackingField: []
   <OldUngroupedNodeNames>k__BackingField:
   - START
-  - DialogueNamenext
-  - xx
   - DialogueName
   <OldGroupedNodeNames>k__BackingField:
     list: []

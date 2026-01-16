@@ -17,29 +17,29 @@ MonoBehaviour:
     speakEnum: 2
     Humeur: 0
     SpritesHumeur:
-    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+    - sprite: {fileID: 21300000, guid: 8d8f508bede9d974d8e85f7cbedbcd22, type: 3}
       humeur: 0
-    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+    - sprite: {fileID: 21300000, guid: e052daf03e049f54b9844545ac3e54c2, type: 3}
       humeur: 2
-    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+    - sprite: {fileID: 21300000, guid: ddba7a5d2b29f334b9d2dffc59f568c1, type: 3}
       humeur: 1
   - Name: Noam
     speakEnum: 1
     Humeur: 0
     SpritesHumeur:
-    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+    - sprite: {fileID: 21300000, guid: 8d8f508bede9d974d8e85f7cbedbcd22, type: 3}
       humeur: 0
-    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+    - sprite: {fileID: 21300000, guid: e052daf03e049f54b9844545ac3e54c2, type: 3}
       humeur: 2
-    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+    - sprite: {fileID: 21300000, guid: ddba7a5d2b29f334b9d2dffc59f568c1, type: 3}
       humeur: 1
   - Name: Margot
     speakEnum: 3
     Humeur: 0
     SpritesHumeur:
-    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+    - sprite: {fileID: 21300000, guid: 8d8f508bede9d974d8e85f7cbedbcd22, type: 3}
       humeur: 0
-    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+    - sprite: {fileID: 21300000, guid: e052daf03e049f54b9844545ac3e54c2, type: 3}
       humeur: 2
-    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+    - sprite: {fileID: 21300000, guid: ddba7a5d2b29f334b9d2dffc59f568c1, type: 3}
       humeur: 1

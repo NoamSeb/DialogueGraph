@@ -374,6 +374,7 @@ private (Port, DropdownField) CreateSingleChoicePortForExisting(DSChoiceSaveData
 
             graphView.RemoveElement(choicePort);
         });
+        
         deleteChoiceButton.AddToClassList("ds-node__buttonDelete");
         choicePort.Add(deleteChoiceButton);
     }
