@@ -12,8 +12,15 @@ public class SpeakerInfo
     public string Name;
     public Espeaker speakEnum;
     public HumeurSpeaker Humeur;
-    public List<Sprite> Sprites;
+    public List<SpriteHumeur> SpritesHumeur;
     
+}
+
+[System.Serializable]
+public class SpriteHumeur
+{
+    public Sprite sprite;
+    public HumeurSpeaker humeur;
 }
 
 public enum HumeurSpeaker

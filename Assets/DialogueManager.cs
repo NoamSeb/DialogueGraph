@@ -219,6 +219,15 @@ public class DialogueManager : MonoBehaviour
     private void SetNewSpeaker(SpeakerInfo speaker)
     {
         _currentSpeaker = speaker;
+        SpeakerNameText.SetText(_currentSpeaker.Name);
+
+        foreach (var humeur in _currentSpeaker.SpritesHumeur)
+        {
+            if (_currentNode.Humeur == humeur.humeur)
+            {
+                SpriteSpeakerHumeur.sprite = humeur.sprite;
+            }
+        }
     }
 
     private DSNodeSaveData GetNodeStart()

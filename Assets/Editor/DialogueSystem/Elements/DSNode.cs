@@ -10,6 +10,10 @@ public class DSNode : Node
     public string ID { get; set; }
     public string DialogueName { get; set; }
     public Espeaker Speaker { get; set; }
+    
+    public HumeurSpeaker Humeur { get; set; }
+    
+    public EUIDisposition UISpeaker { get; set; }
     public DSNodeSaveData Saves { get; set; }
     public string Text { get; set; }
 
@@ -107,7 +111,16 @@ public class DSNode : Node
         EnumField speakerEnumField = new EnumField("", Speaker);
         speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker)callback.newValue));
         titleContainer.Add(speakerEnumField);
-
+        
+        
+        EnumField humeurEnumField = new EnumField("", Humeur);
+        humeurEnumField.RegisterValueChangedCallback(callback => SetHumeur((HumeurSpeaker)callback.newValue));
+        titleContainer.Add(humeurEnumField);
+        
+        EnumField UISpeakerEnumField = new EnumField("", UISpeaker);
+        UISpeakerEnumField.RegisterValueChangedCallback(callback => SetUIDispo((EUIDisposition)callback.newValue));
+        titleContainer.Add(UISpeakerEnumField);
+        
 
         /* INPUT CONTAINER */
         Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input,
@@ -248,5 +261,15 @@ public class DSNode : Node
         {
             _dropdownFieldDialogue.choices.Add(key);
         }
+    }
+    
+    public void SetHumeur(HumeurSpeaker humeur)
+    {
+        Humeur = humeur;
+    }
+    
+    public void SetUIDispo(EUIDisposition uiDisposition)
+    {
+        UISpeaker = uiDisposition;
     }
 }
