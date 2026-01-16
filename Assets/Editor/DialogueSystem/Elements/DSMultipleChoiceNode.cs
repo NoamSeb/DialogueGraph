@@ -170,7 +170,7 @@ using UnityEngine.UIElements;
             RefreshExpandedState();
         }
 
-        private Port CreateChoicePort(object userData)
+        public Port CreateChoicePort(object userData)
         {
             Port choicePort = this.CreatePort();
 
@@ -266,8 +266,8 @@ using UnityEngine.UIElements;
 
             return conditionsField;
         }
-        
-        private void AddConditionsBelowPort(Port port, VisualElement element, bool canBeDeleted = true)
+
+        public void AddConditionsBelowPort(Port port, VisualElement element, bool canBeDeleted = true)
         {
             if (port == null)
                 return;

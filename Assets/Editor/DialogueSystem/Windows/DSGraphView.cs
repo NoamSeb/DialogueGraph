@@ -42,6 +42,10 @@ using UnityEngine.UIElements;
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
             editorWindow = dsEditorWindow;
+            
+            ungroupedNodes = new SerializableDictionary<string, DSNodeErrorData>();
+            groupedNodes = new SerializableDictionary<Group, SerializableDictionary<string, DSNodeErrorData>>();
+
 
             ungroupedNodes = new SerializableDictionary<string, DSNodeErrorData>();
             groups = new SerializableDictionary<string, DSGroupErrorData>();
@@ -356,38 +360,48 @@ using UnityEngine.UIElements;
 
         public void AddUngroupedNode(DSNode node)
         {
+            if (node == null)
+                return;
+
+            if (string.IsNullOrEmpty(node.DialogueName))
+            {
+                node.DialogueName = $"Node_{node.ID}";
+            }
+
             string nodeName = node.DialogueName.ToLower();
 
             if (!ungroupedNodes.ContainsKey(nodeName))
             {
                 DSNodeErrorData nodeErrorData = new DSNodeErrorData();
-
                 nodeErrorData.Nodes.Add(node);
 
                 ungroupedNodes.Add(nodeName, nodeErrorData);
-
                 return;
             }
 
             List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
-
             ungroupedNodesList.Add(node);
 
             Color errorColor = ungroupedNodes[nodeName].ErrorData.Color;
-
             node.SetErrorStyle(errorColor);
 
             if (ungroupedNodesList.Count == 2)
             {
                 ++NameErrorsAmount;
-
                 ungroupedNodesList[0].SetErrorStyle(errorColor);
             }
         }
 
+
         public void RemoveUngroupedNode(DSNode node)
         {
+            //string nodeName = node.DialogueName.ToLower();
+            
+            if (string.IsNullOrEmpty(node.DialogueName))
+                return;
+
             string nodeName = node.DialogueName.ToLower();
+
 
             List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
 

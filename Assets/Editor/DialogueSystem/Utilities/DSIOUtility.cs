@@ -301,7 +301,7 @@ using UnityEngine;
             DSEditorWindow.UpdateFileName(graphData.FileName);
 
             LoadGroups(graphData.Groups);
-            LoadNodes(graphData.Nodes);
+            LoadNodes(graphView, graphData.Nodes);
             LoadNodesConnections();
         }
 
@@ -317,40 +317,78 @@ using UnityEngine;
             }
         }
 
-        private static void LoadNodes(List<DSNodeSaveData> nodes)
+        public static void LoadNodes(DSGraphView graphView, List<DSNodeSaveData> nodes)
         {
-            foreach (DSNodeSaveData nodeData in nodes)
+            
+            if (graphView == null || nodes == null)
+                return;
+
+            foreach (var nodeData in nodes)
             {
-                List<DSChoiceSaveData> choices = CloneNodeChoices(nodeData.ChoicesInNode);
+                if (nodeData == null)
+                    continue;
 
-                DSNode node = graphView.CreateNode(nodeData.Name, nodeData.DialogueType, nodeData.Position, false);
+                // 1️⃣ Crée le node dans le graph view
+                DSNode node = graphView.CreateNode(
+                    string.IsNullOrEmpty(nodeData.Name) ? $"Node_{nodeData.ID}" : nodeData.Name,
+                    nodeData.DialogueType,
+                    nodeData.Position,
+                    false // On dessine après
+                );
 
+                if (node == null)
+                    continue;
+
+                // 2️⃣ Initialise les valeurs de base
                 node.ID = nodeData.ID;
-                node.Saves.ChoicesInNode = choices;
-                node.Text = nodeData.Text;
-                node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
-                node.Saves.ConditionsMap = nodeData.ConditionsMap;
+                node.DialogueName = string.IsNullOrEmpty(nodeData.Name) ? $"Node_{node.ID}" : nodeData.Name;
 
-                node.SetSpeaker(nodeData.Speaker);
-
+                // 3️⃣ Dessine le node maintenant qu'il est initialisé
                 node.Draw();
 
-                graphView.AddElement(node);
-
-                loadedNodes.Add(node.ID, node);
-
-                if (string.IsNullOrEmpty(nodeData.GroupID))
+                // 4️⃣ Si MultipleChoice, charge les choix
+                if (node is DSMultipleChoiceNode multiNode && nodeData.ChoicesInNode != null)
                 {
-                    continue;
+                    multiNode.Saves.ChoicesInNode.Clear();
+                    
+                    foreach (var choiceData in nodeData.ChoicesInNode)
+                    {
+                        if (choiceData == null)
+                            continue;
+
+                        multiNode.Saves.ChoicesInNode.Add(choiceData);
+
+                        // Crée le port pour chaque choix
+                        Port port = multiNode.CreateChoicePort(choiceData);
+                        multiNode.outputContainer.Add(port);
+
+                        // Si ce choix a des conditions sauvegardées
+                        if (nodeData.ConditionsMap != null && nodeData.ConditionsMap.TryGetValue(port, out var conditionsList))
+                        {
+                            foreach (var cond in conditionsList)
+                            {
+                                if (cond == null)
+                                    continue;
+                        
+                                multiNode.AddConditionsBelowPort(port, cond, false);
+                            }
+                        }
+                    }
+
+                    // S'il n'y a aucun choix, créer un choix par défaut
+                    if (multiNode.Saves.ChoicesInNode.Count == 0)
+                    {
+                        var defaultChoice = new DSChoiceSaveData();
+                        multiNode.Saves.ChoicesInNode.Add(defaultChoice);
+
+                        var port = multiNode.CreateChoicePort(defaultChoice);
+                        multiNode.outputContainer.Add(port);
+                    }
                 }
-
-                DSGroup group = loadedGroups[nodeData.GroupID];
-
-                node.Group = group;
-
-                group.AddElement(node);
             }
         }
+
+
 
         private static void LoadNodesConnections()
         {

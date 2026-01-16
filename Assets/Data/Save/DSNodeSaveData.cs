@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 [Serializable]
     public class DSNodeSaveData
     {
+        //[field: SerializeField] public bool IsStart { get; set; }
         [field: SerializeField] public string ID { get; set; }
         [field: SerializeField] public string Name { get; set; }
 

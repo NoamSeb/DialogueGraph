@@ -1,15 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using NaughtyAttributes;
-using UnityEngine.SocialPlatforms;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueRuntime : MonoBehaviour
 {
     public DSGraphSaveDataSO runtimeGraph;
+
+    private DSNodeSaveData _currentNode;
+    
+    private Dictionary<string, DSNodeSaveData> _nodeLookup = new Dictionary<string, DSNodeSaveData>();
 
     [Header("UI Elements")] public GameObject dialoguePanel;
     public TextMeshProUGUI SpeakerNameText;
@@ -21,14 +25,6 @@ public class DialogueManager : MonoBehaviour
     public Speakers SpeakersScriptable;
     private SpeakerInfo _currentSpeaker;
 
-    private Dictionary<string, DSNodeSaveData> _nodeLookup = new Dictionary<string, DSNodeSaveData>();
-    private DSNodeSaveData _currentNode;
-
-    [Button]
-    public void LoadCsv()
-    {
-        FantasyDialogueTable.Load();
-    }
 
     private void Start()
     {
@@ -51,7 +47,6 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
         }
     }
-
 
     private void Update()
     {
@@ -79,7 +74,7 @@ public class DialogueManager : MonoBehaviour
         _currentNode = _nodeLookup[nodeID];
 
         dialoguePanel.SetActive(true);
-        //SpeakerNameText.SetText(_currentNode.SpeakerName);
+        //SpeakerNameText.SetText(_currentNode.Speaker);
         print(_currentNode.Speaker);
         ChangeSpeaker(_currentNode.Speaker);
 
@@ -99,9 +94,22 @@ public class DialogueManager : MonoBehaviour
                 TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
                 if (choiceText != null)
                 {
-                    choiceText.text = "TEST";
-                    choiceText.text = choice.DropDownKey; // Assure-toi que Text est rempli dans DSChoiceSaveData
+                    choiceText.text = choice.DropDownKey;
                 }
+
+                DSChoiceSaveData cachedChoice = choice;
+
+                choiceButton.onClick.AddListener(() =>
+                {
+                    if (!string.IsNullOrEmpty(cachedChoice.NodeID))
+                    {
+                        ShowNode(cachedChoice.NodeID);
+                    }
+                    else
+                    {
+                        EndDialogue();
+                    }
+                });
             }
         }
     }
@@ -132,6 +140,7 @@ public class DialogueManager : MonoBehaviour
     {
         _currentSpeaker = speaker;
         SpeakerNameText.SetText(_currentSpeaker.Name);
-        print(_currentSpeaker.Name);
+        //SpeakerNameText.Text
+        print("je suis là " + _currentSpeaker.Name);
     }
 }
