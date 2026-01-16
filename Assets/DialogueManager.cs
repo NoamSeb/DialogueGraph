@@ -147,6 +147,7 @@ public class DialogueManager : MonoBehaviour
                     bool fillCondition = true;
                     foreach (var condition in choice.Conditions)
                     {
+                        Debug.Log("Evaluating condition for choice: " + condition.conditionItem);
                         fillCondition = DoesFillCondtions(condition);
                         if (!fillCondition)
                         {

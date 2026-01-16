@@ -33,7 +33,8 @@ MonoBehaviour:
     <choicesInNode>k__BackingField:
     - NodeID: 50b4e0c5-49fe-445a-b2be-44213eec85c9
       _dropDownKeyChoice: Diag_2
-      <Conditions>k__BackingField: []
+      <Conditions>k__BackingField:
+      - {fileID: 11400000, guid: e601c92e8f8344b42bbcf5c8044b7e4d, type: 2}
     - NodeID: 940400db-93c7-4a35-b505-622a31a46a06
       _dropDownKeyChoice: Diag_3
       <Conditions>k__BackingField: []
