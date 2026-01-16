@@ -11,7 +11,6 @@ public class Speakers : ScriptableObject
 public enum Espeaker
 {
     None,
-    Noam,
-    Gab,
-    Margot
+    Brant,
+    Juliana
 }
