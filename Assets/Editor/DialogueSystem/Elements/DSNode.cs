@@ -37,10 +37,10 @@ public class DSNode : Node
         ID = Guid.NewGuid().ToString();
 
         DialogueName = nodeName;
-        
+
         Saves = new DSNodeSaveData();
         Saves.SetChoices(new List<DSChoiceSaveData>());
-        
+
         Text = "Dialogue text.";
         SetPosition(new Rect(position, Vector2.zero));
 
@@ -53,48 +53,48 @@ public class DSNode : Node
 
     public virtual void Draw()
     {
-        
         /* TITLE CONTAINER */
-        
-        TextField dialogueNameTextField = DSElementUtility.CreateTextField(DialogueName, null, (ChangeEvent<string> evt) =>
-        {
-            var target = (TextField)evt.target;
-            string newValue = evt.newValue;
-            try
-            {
-                newValue = newValue.RemoveWhitespaces().RemoveSpecialCharacters();
-            }
-            catch
-            {
-            }
 
-            bool wasEmpty = string.IsNullOrEmpty(DialogueName);
-            bool nowEmpty = string.IsNullOrEmpty(newValue);
-            if (wasEmpty && !nowEmpty)
+        TextField dialogueNameTextField = DSElementUtility.CreateTextField(DialogueName, null,
+            (ChangeEvent<string> evt) =>
             {
-                graphView.NameErrorsAmount = Math.Max(0, graphView.NameErrorsAmount - 1);
-            }
-            else if (!wasEmpty && nowEmpty)
-            {
-                graphView.NameErrorsAmount++;
-            }
+                var target = (TextField)evt.target;
+                string newValue = evt.newValue;
+                try
+                {
+                    newValue = newValue.RemoveWhitespaces().RemoveSpecialCharacters();
+                }
+                catch
+                {
+                }
 
-            if (Group == null)
-            {
-                graphView.RemoveUngroupedNode(this);
-                DialogueName = newValue;
-                graphView.AddUngroupedNode(this);
-            }
-            else
-            {
-                var currentGroup = Group;
-                graphView.RemoveGroupedNode(this, currentGroup);
-                DialogueName = newValue;
-                graphView.AddGroupedNode(this, currentGroup);
-            }
+                bool wasEmpty = string.IsNullOrEmpty(DialogueName);
+                bool nowEmpty = string.IsNullOrEmpty(newValue);
+                if (wasEmpty && !nowEmpty)
+                {
+                    graphView.NameErrorsAmount = Math.Max(0, graphView.NameErrorsAmount - 1);
+                }
+                else if (!wasEmpty && nowEmpty)
+                {
+                    graphView.NameErrorsAmount++;
+                }
 
-            target.value = newValue;
-        });
+                if (Group == null)
+                {
+                    graphView.RemoveUngroupedNode(this);
+                    DialogueName = newValue;
+                    graphView.AddUngroupedNode(this);
+                }
+                else
+                {
+                    var currentGroup = Group;
+                    graphView.RemoveGroupedNode(this, currentGroup);
+                    DialogueName = newValue;
+                    graphView.AddGroupedNode(this, currentGroup);
+                }
+
+                target.value = newValue;
+            });
 
         dialogueNameTextField.AddToClassList("ds-node__text-field");
         dialogueNameTextField.AddToClassList("ds-node__text-field__hidden");
@@ -105,11 +105,11 @@ public class DSNode : Node
         EnumField speakerEnumField = new EnumField("", Speaker);
         speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker)callback.newValue));
         titleContainer.Add(speakerEnumField);
-        
-        
+
 
         /* INPUT CONTAINER */
-        Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
+        Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input,
+            Port.Capacity.Multi);
         inputContainer.Add(inputPort);
 
         /* EXTENSION CONTAINER */
@@ -122,19 +122,19 @@ public class DSNode : Node
         FillCsvDropdown(dp);
 
 
-        
         dp.RegisterValueChangedCallback((ChangeEvent<string> evt) => OnDropdownEvent(dp));
 
         textFoldout.Add(dp);
 
         _fieldLabel = DSElementUtility.CreateTextField("waiting for key...");
         textFoldout.Add(_fieldLabel);
-        
+
         if (Saves.GetDropDownKeyDialogue() != "")
         {
             dp.value = Saves.GetDropDownKeyDialogue();
             OnDropdownEvent(dp);
         }
+
         customDataContainer.Add(textFoldout);
         extensionContainer.Add(customDataContainer);
     }
@@ -153,11 +153,17 @@ public class DSNode : Node
         _fieldLabel.value = FantasyDialogueTable.LocalManager.GetAllDialogueFromValue(dropdownField.value);
         Saves.SaveDropDownKeyDialogue(dropdownField.value);
     }
-    
+
     public void FillCsvDropdown(DropdownField dropdownField)
     {
         dropdownField.choices.Clear();
-        List<string> keys = FantasyDialogueTable.FindAll_Keys();
+        string speakerName = null;
+        if (Speaker != 0)
+        {
+            speakerName = Speaker.ToString();
+        }
+
+        List<string> keys = FantasyDialogueTable.FindAll_Keys(speakerName);
         if (keys == null) return;
         foreach (string key in keys)
         {
