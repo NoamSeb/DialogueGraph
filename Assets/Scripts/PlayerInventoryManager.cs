@@ -29,8 +29,10 @@ public class PlayerInventoryManager : MonoBehaviour
         {
             if (playerItem.conditionItem == condition.conditionItem)
             {
+                Debug.Log($"Comparing Player Item: {playerItem.conditionItem} with Condition Item: {condition.conditionItem}");
                 if (playerItem.conditionValue >= condition.conditionValue)
                 {
+                    Debug.Log($"Player fills condition: {condition.conditionItem} with value {condition.conditionValue}");
                     return true;
                 }
                 return false;

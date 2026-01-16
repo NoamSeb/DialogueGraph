@@ -194,6 +194,7 @@ public class LocalManager
         Dictionary<string, string> Locals;
         FantasyDialogueTable.LocalManager.idLangLink.TryGetValue("idLng", out Locals);
         List<string> foundList = new();
+        Debug.Log("Finding all dialogues for key: " + key + " with " + Locals.Count + " locals.");
 
         foreach (KeyValuePair<string, string> KVP in Locals)
         {
@@ -226,6 +227,7 @@ public class LocalManager
         }
         catch
         {
+            
             try
             {
                 var entry = FantasyDialogueTable.Find_idLng(key);
@@ -233,6 +235,7 @@ public class LocalManager
             }
             catch
             {
+                
                 return $"Key: {key}";
             }
         }
