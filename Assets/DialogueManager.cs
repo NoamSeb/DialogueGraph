@@ -13,6 +13,12 @@ public enum language
     FR,
     EN,
 }
+public enum bubleType
+{
+    NORMAL,
+    THINK,
+    SHOUT,
+}
 
 
 public class DialogueManager : MonoBehaviour
@@ -25,7 +31,8 @@ public class DialogueManager : MonoBehaviour
 
     [Header("UI Elements")]
     
-   // private Dictionary<>
+    private Dictionary<bubleType, dialogueContainer> _bubleContainers = new Dictionary<bubleType, dialogueContainer>();
+    [SerializeField] private List<dialogueContainer> _bubleContainerList = new List<dialogueContainer>();
 
     [Header("Choice Button UI")] public Button ChoiceButtonPrefab;
     public Transform ChoiceButtonContainer;
@@ -37,11 +44,23 @@ public class DialogueManager : MonoBehaviour
     private DSNodeSaveData _currentNode;
     
     private bool _isWaitingForChoice = false;
+    
+    private dialogueContainer _currentDialogueContainer;
+    private dialogueContainer _oldDialogueContainer;
 
     [Button]
     public void LoadCsv()
     {
         FantasyDialogueTable.Load();
+    }
+
+    private void Awake()
+    {
+        // ON FAIT CA EN BRUT PRCQ NSM
+        
+        _bubleContainers.Add(bubleType.NORMAL, _bubleContainerList[0]);
+        _bubleContainers.Add(bubleType.THINK, _bubleContainerList[1]);
+        _bubleContainers.Add(bubleType.SHOUT, _bubleContainerList[2]);
     }
 
     private void Start()
@@ -120,12 +139,10 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
             return;
         }
-
-        dialoguePanel.SetActive(true);
-        ChangeSpeaker(_currentNode.Speaker);
         
-
-        DialogueText.SetText(FantasyDialogueTable.LocalManager.FindDialogue(_currentNode.GetDropDownKeyDialogue(), Enum.GetName(typeof(language), languageSetting)));
+        ChangeSpeaker(_currentNode.Speaker);
+        string target = FantasyDialogueTable.LocalManager.FindDialogue(_currentNode.GetDropDownKeyDialogue(), Enum.GetName(typeof(language), languageSetting));
+        _currentDialogueContainer.InitializeDialogueContainer(target, _currentSpeaker.Name);
 
         foreach (Transform child in ChoiceButtonContainer)
         {
@@ -179,7 +196,7 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
-        dialoguePanel.SetActive(false);
+        _currentDialogueContainer.HideContainer();
         _currentNode = null;
 
         foreach (Transform child in ChoiceButtonContainer)
@@ -202,7 +219,6 @@ public class DialogueManager : MonoBehaviour
     private void SetNewSpeaker(SpeakerInfo speaker)
     {
         _currentSpeaker = speaker;
-        SpeakerNameText.SetText(_currentSpeaker.Name);
     }
 
     private DSNodeSaveData GetNodeStart()
