@@ -141,6 +141,22 @@ public class DialogueManager : MonoBehaviour
             foreach (DSChoiceSaveData choice in _currentNode.choicesInNode)
             {
                 Button choiceButton = Instantiate(ChoiceButtonPrefab, ChoiceButtonContainer);
+                buttonChoiceController buttonController = choiceButton.GetComponent<buttonChoiceController>();
+                if (buttonController != null)
+                {
+                    bool fillCondition = true;
+                    foreach (var condition in choice.Conditions)
+                    {
+                        fillCondition = DoesFillCondtions(condition);
+                        if (!fillCondition)
+                        {
+                            Debug.Log("Choice locked due to unmet condition: " + condition.conditionItem);
+                            break;
+                        }
+                    }
+                    string textButton = FantasyDialogueTable.LocalManager.FindDialogue(choice.GetDropDownKeyChoice(), Enum.GetName(typeof(language), languageSetting));
+                    buttonController.InitializeButtonChoiceController(fillCondition, textButton);
+                }
                 
                 choiceButton.onClick.AddListener(() =>
                 {
@@ -148,14 +164,14 @@ public class DialogueManager : MonoBehaviour
                     Debug.Log("Player selected choice leading to Node ID: " + choice.NodeID);
                     ShowNode(choice.NodeID);
                 });
-
-                TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (choiceText != null)
-                {
-                    choiceText.SetText(FantasyDialogueTable.LocalManager.FindDialogue(choice.GetDropDownKeyChoice(), Enum.GetName(typeof(language), languageSetting)));
-                }
             }
         }
+    }
+    
+    private bool DoesFillCondtions(ConditionsSC choice)
+    {
+        Debug.Log("Checking if player fills condition: " + choice.conditionItem);
+        return PlayerInventoryManager.instance.DoesPlayerFillCondition(choice);
     }
 
     private void EndDialogue()

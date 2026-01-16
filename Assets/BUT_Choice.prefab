@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168db5382482a774891cef7a8b553cad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  buttonText: {fileID: 0}
+  buttonText: {fileID: 1908226225776389358}
 --- !u!95 &7712706666949876966
 Animator:
   serializedVersion: 7

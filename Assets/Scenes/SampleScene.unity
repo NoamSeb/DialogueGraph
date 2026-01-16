@@ -1017,6 +1017,52 @@ MonoBehaviour:
   ChoiceButtonPrefab: {fileID: 2450449145640451282, guid: 33e1f0b39949b554d88cca2bf0a29d93, type: 3}
   ChoiceButtonContainer: {fileID: 1927992912}
   SpeakersScriptable: {fileID: 11400000, guid: 82e282dbd1d6b8c4d845bae0b97efb89, type: 2}
+--- !u!1 &1925208631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1925208633}
+  - component: {fileID: 1925208632}
+  m_Layer: 0
+  m_Name: PlayerInventoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1925208632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925208631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8a8f53dcdc8464f99712d5f78ce672, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  inventoryItems:
+  - {fileID: 11400000, guid: 41596607f584f8047b5b6cecc0256fa0, type: 2}
+--- !u!4 &1925208633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925208631}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 883.09094, y: 508.04138, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1927992911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,3 +1134,4 @@ SceneRoots:
   - {fileID: 1046834670}
   - {fileID: 252840413}
   - {fileID: 291675179}
+  - {fileID: 1925208633}
