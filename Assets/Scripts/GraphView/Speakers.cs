@@ -14,3 +14,10 @@ public enum Espeaker
     Brant,
     Juliana
 }
+
+[System.Serializable]
+public enum EUIDisposition
+{
+    classique,
+    envers
+}
