@@ -159,6 +159,8 @@ public static class DSIOUtility
                 SaveNodeToGraph(node, graphData);
                 SaveNodeToScriptableObject(node, dialogueContainer);
 
+                
+                
                 if (node.Group != null)
                 {
                     groupedNodeNames.AddItem(node.Group.title, node.DialogueName);
@@ -183,15 +185,15 @@ public static class DSIOUtility
             {
                 ID = node.ID,
                 Name = node.DialogueName,
-                Text = node.Text,
                 GroupID = node.Group?.ID,
                 DialogueType = node.DialogueType,
                 Position = node.GetPosition().position,
                 isMultipleChoice = node.Saves.isMultipleChoice,
-                NextDialogueNodeID = node.Saves.NextDialogueNodeID // <- AJOUT
+             //   NextDialogueNodeID = node.Saves.NextDialogueNodeID // <- AJOUT
             };
 
             nodeData.SaveDropDownKeyDialogue(node.Saves.GetDropDownKeyDialogue());
+            Debug.Log("Saving Node Dialogue Key = " + node.Saves.GetDropDownKeyDialogue());
             nodeData.SaveSpeaker(node.Speaker);
             nodeData.SetChoices(choices);
 
@@ -353,12 +355,12 @@ public static class DSIOUtility
 
                 DSNode node = graphView.CreateNode(nodeData.Name, nodeData.DialogueType, nodeData.Position, false);
                 node.ID = nodeData.ID;
-                node.Text = nodeData.Text;
                 
                 node.Saves.SaveDropDownKeyDialogue( nodeData.GetDropDownKeyDialogue());
+                Debug.Log("Loading Node Dialogue Key = " + nodeData.GetDropDownKeyDialogue());
                 node.Saves.SetChoices(choices);
                 node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
-                node.Saves.NextDialogueNodeID = nodeData.NextDialogueNodeID;
+           //     node.Saves.NextDialogueNodeID = nodeData.NextDialogueNodeID;
                 node.SetSpeaker(nodeData.Speaker);
                 node.Draw();
                 
@@ -477,7 +479,7 @@ public static class DSIOUtility
                 DSNode srcNode = kv.Value;
                 if (srcNode == null || srcNode.Saves == null) continue;
 
-                string nextId = srcNode.Saves.NextDialogueNodeID;
+                string nextId = srcNode.Saves.choicesInNode[0].NodeID;
                 if (string.IsNullOrEmpty(nextId)) continue;
 
                 if (!loadedNodes.TryGetValue(nextId, out DSNode targetNode))
@@ -659,7 +661,7 @@ public static class DSIOUtility
                 }
                 else if (outPort.node is DSStartNode startNode && inPort.node is DSNode tNode)
                 {
-                    startNode.Saves.NextDialogueNodeID = tNode.ID;
+                    startNode.Saves.choicesInNode[0].NodeID = tNode.ID;
                 }
             }
         }

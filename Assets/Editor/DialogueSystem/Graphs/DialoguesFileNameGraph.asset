@@ -14,8 +14,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp-Editor::DS.Data.Save.DSGraphSaveDataSO
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
-  <Nodes>k__BackingField: []
+  <Nodes>k__BackingField:
+  - <ID>k__BackingField: 67d75f67-04d2-4935-b827-7279e467de44
+    <Name>k__BackingField: START
+    <Speaker>k__BackingField: 0
+    isMultipleChoice: 0
+    <choicesInNode>k__BackingField:
+    - NodeID: 5ad9d603-7b9c-486d-9ef7-63b3784b5f8e
+      _dropDownKeyChoice: 
+      <Conditions>k__BackingField: []
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 620, y: 335.33334}
+  - <ID>k__BackingField: 5ad9d603-7b9c-486d-9ef7-63b3784b5f8e
+    <Name>k__BackingField: DialogueName
+    <Speaker>k__BackingField: 0
+    isMultipleChoice: 1
+    <choicesInNode>k__BackingField:
+    - NodeID: 50b4e0c5-49fe-445a-b2be-44213eec85c9
+      _dropDownKeyChoice: Diag_2
+      <Conditions>k__BackingField: []
+    - NodeID: 940400db-93c7-4a35-b505-622a31a46a06
+      _dropDownKeyChoice: Diag_3
+      <Conditions>k__BackingField: []
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 969.3333, y: 335.33334}
+  - <ID>k__BackingField: 50b4e0c5-49fe-445a-b2be-44213eec85c9
+    <Name>k__BackingField: DialogueNamenext
+    <Speaker>k__BackingField: 2
+    isMultipleChoice: 0
+    <choicesInNode>k__BackingField:
+    - NodeID: 
+      _dropDownKeyChoice: 
+      <Conditions>k__BackingField: []
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 1808.6666, y: 254.66666}
+  - <ID>k__BackingField: 940400db-93c7-4a35-b505-622a31a46a06
+    <Name>k__BackingField: xx
+    <Speaker>k__BackingField: 1
+    isMultipleChoice: 0
+    <choicesInNode>k__BackingField:
+    - NodeID: 
+      _dropDownKeyChoice: 
+      <Conditions>k__BackingField: []
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 1830, y: 493.3333}
   <OldGroupNames>k__BackingField: []
-  <OldUngroupedNodeNames>k__BackingField: []
+  <OldUngroupedNodeNames>k__BackingField:
+  - START
+  - DialogueName
+  - DialogueNamenext
+  - xx
   <OldGroupedNodeNames>k__BackingField:
     list: []

@@ -105,6 +105,8 @@ public class DSNode : Node
         EnumField speakerEnumField = new EnumField("", Speaker);
         speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker)callback.newValue));
         titleContainer.Add(speakerEnumField);
+        
+        
 
         /* INPUT CONTAINER */
         Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);

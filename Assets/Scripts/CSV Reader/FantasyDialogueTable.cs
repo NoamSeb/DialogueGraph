@@ -149,11 +149,21 @@ public class LocalManager
 	
 	public string FindDialogue(string key, string local)
 	{
+		// Example: key = "GREETING", local = "FR"
+		
+		Debug.Log("Finding dialogue for key: " + key + " and local: " + local);
+		Debug.Log("ID LANG LINGK COUNT = "+idLangLink.Count);
 		Dictionary<string, string> DicoFromKey;
 		FantasyDialogueTable.LocalManager.idLangLink.TryGetValue(key, out DicoFromKey);
-		string foundValue;
-		DicoFromKey.TryGetValue(local, out foundValue);
-		
+		string foundValue = "";
+		if (DicoFromKey != null)
+		{
+			DicoFromKey.TryGetValue(local, out foundValue);
+		}
+		else
+		{
+			Debug.Log("DICO IS NULL");
+		}
 		return foundValue;
 	}
 	

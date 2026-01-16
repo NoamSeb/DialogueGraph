@@ -35,8 +35,6 @@ public class DSNodeSaveData
         return _dropDownKeyDialogue;
     }
 
-    [field: SerializeField] public string Text { get; set; }
-    
     public void SetChoices(List<DSChoiceSaveData> choicesSaveData)
     {
         choicesInNode = choicesSaveData;
@@ -51,5 +49,4 @@ public class DSNodeSaveData
     [field: SerializeField] public string GroupID { get; set; }
     [field: SerializeField] public DSDialogueType DialogueType { get; set; }
     [field: SerializeField] public Vector2 Position { get; set; }
-    [field: SerializeField] public string NextDialogueNodeID { get; set; }
 }
