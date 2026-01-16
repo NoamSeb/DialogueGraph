@@ -1945,7 +1945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   runtimeGraph: {fileID: 11400000, guid: b1b2ace7060ef4e498df24e35ed0a37d, type: 2}
-  languageSetting: 0
+  languageSetting: 1
   _bubleContainerList:
   - {fileID: 545183475}
   - {fileID: 1997860482}
@@ -2137,6 +2137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   inventoryItems:
   - {fileID: 11400000, guid: 41596607f584f8047b5b6cecc0256fa0, type: 2}
+  - {fileID: 11400000, guid: eea3dd68890666f41b28aa2a680b927d, type: 2}
 --- !u!4 &1925208633
 Transform:
   m_ObjectHideFlags: 0

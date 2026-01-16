@@ -57,7 +57,7 @@ public class DSNode : Node
 
     public virtual void Draw()
     {
-        /* TITLE CONTAINER */
+        /* TITLE CONTAINER (LE PLUS HAUT) */
 
         TextField dialogueNameTextField = DSElementUtility.CreateTextField(DialogueName, null,
             (ChangeEvent<string> evt) =>
@@ -216,7 +216,6 @@ public class DSNode : Node
                 continue;
             }
 
-            // Suppression des connexions existantes
             graphView.DeleteElements(port.connections);
         }
     }
