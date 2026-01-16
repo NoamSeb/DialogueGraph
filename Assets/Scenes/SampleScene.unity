@@ -950,6 +950,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1524097076}
   - component: {fileID: 1524097077}
+  - component: {fileID: 1524097078}
   m_Layer: 5
   m_Name: Dialogue
   m_TagString: Untagged
@@ -991,6 +992,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   runtimeGraph: {fileID: 11400000, guid: b1b2ace7060ef4e498df24e35ed0a37d, type: 2}
   languageSetting: 0
+  dialoguePanel: {fileID: 545183473}
+  SpeakerNameText: {fileID: 151663469}
+  DialogueText: {fileID: 61481419}
+  ChoiceButtonPrefab: {fileID: 2450449145640451282, guid: 33e1f0b39949b554d88cca2bf0a29d93, type: 3}
+  ChoiceButtonContainer: {fileID: 1927992912}
+  SpeakersScriptable: {fileID: 11400000, guid: 82e282dbd1d6b8c4d845bae0b97efb89, type: 2}
+--- !u!114 &1524097078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524097075}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7214b58c407ca4a89957d8682e03e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueRuntime
+  runtimeGraph: {fileID: 11400000, guid: b1b2ace7060ef4e498df24e35ed0a37d, type: 2}
   dialoguePanel: {fileID: 545183473}
   SpeakerNameText: {fileID: 151663469}
   DialogueText: {fileID: 61481419}

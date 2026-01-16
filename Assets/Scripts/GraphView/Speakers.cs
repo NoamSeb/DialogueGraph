@@ -10,6 +10,7 @@ public class Speakers : ScriptableObject
 [System.Serializable]
 public enum Espeaker
 {
+    None,
     Noam,
     Gab,
     Margot
