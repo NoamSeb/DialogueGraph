@@ -77,6 +77,9 @@ public static class DSIOUtility
             DSDialogueContainerSO dialogueContainer = CreateAsset<DSDialogueContainerSO>(containerFolderPath, graphFileName);
             // clear dialogue container entries before repopulating (defensive)
             dialogueContainer.Initialize(graphFileName);
+            
+            
+            SyncChoicesFromEdges_SingleTarget();
 
             SaveGroups(graphData, dialogueContainer);
             SaveNodes(graphData, dialogueContainer);
@@ -185,6 +188,7 @@ public static class DSIOUtility
                 DialogueType = node.DialogueType,
                 Position = node.GetPosition().position,
                 isMultipleChoice = node.Saves.isMultipleChoice,
+                NextDialogueNodeID = node.Saves.NextDialogueNodeID // <- AJOUT
             };
 
             nodeData.SaveDropDownKeyDialogue(node.Saves.GetDropDownKeyDialogue());
@@ -326,10 +330,6 @@ public static class DSIOUtility
             LoadGroups(graphData.Groups);
             LoadNodes(graphData.Nodes);
             LoadNodesConnections();
-            
-            graphData.Nodes.Clear();
-            graphData.Groups.Clear();
-            
         }
 
         private static void LoadGroups(List<DSGroupSaveData> groups)
@@ -358,7 +358,7 @@ public static class DSIOUtility
                 node.Saves.SaveDropDownKeyDialogue( nodeData.GetDropDownKeyDialogue());
                 node.Saves.SetChoices(choices);
                 node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
-                
+                node.Saves.NextDialogueNodeID = nodeData.NextDialogueNodeID;
                 node.SetSpeaker(nodeData.Speaker);
                 node.Draw();
                 
@@ -381,99 +381,144 @@ public static class DSIOUtility
                 }
             }
         }
+
         private static void LoadNodesConnections()
-{
-    Port FindPortInElement(VisualElement elem)
-    {
-        if (elem == null) return null;
-        if (elem is Port directPort) return directPort;
-
-        // recherche récursive (profondeur limitée par la structure UI)
-        foreach (var child in elem.Children())
-        {
-            var found = FindPortInElement(child);
-            if (found != null) return found;
-        }
-        return null;
-    }
-
-    foreach (KeyValuePair<string, DSNode> loadedNode in loadedNodes)
-    {
-        // defensive: ensure node and its outputContainer exist
-        var node = loadedNode.Value;
-        if (node == null || node.outputContainer == null) continue;
-
-        foreach (var visualElement in node.outputContainer.Children())
-        {
-            // chercher un Port soit à la racine, soit imbriqué
-            Port choicePort = FindPortInElement(visualElement);
-
-            if (choicePort == null)
-            {
-                // ce child ne contient pas de port, on l'ignore
-                continue;
+        { 
+            Port FindPortInElement(VisualElement elem) 
+            { if (elem == null) return null; 
+                if (elem is Port directPort) return directPort;
+                foreach (var child in elem.Children())
+                {
+                    var found = FindPortInElement(child);
+                    if (found != null) return found;
+                }
+                return null;
             }
 
-            // userData peut être null ou de type différent => vérifier
-            if (choicePort.userData == null)
+            foreach (KeyValuePair<string, DSNode> loadedNode in loadedNodes)
             {
-                Debug.LogWarning($"[LoadNodesConnections] Port sans userData trouvé dans node '{node.DialogueName}' (ID: {node.ID}). Ignoring.");
-                continue;
-            }
+                // defensive: ensure node and its outputContainer exist
+                var node = loadedNode.Value;
+                if (node == null || node.outputContainer == null) continue;
 
-            if (!(choicePort.userData is DSChoiceSaveData choiceData))
-            {
-                Debug.LogWarning($"[LoadNodesConnections] Port.userData n'est pas un DSChoiceSaveData pour le node '{node.DialogueName}'. Type trouvé: {choicePort.userData.GetType().Name}");
-                continue;
-            }
+                foreach (var visualElement in node.outputContainer.Children())
+                {
+                    // chercher un Port soit à la racine, soit imbriqué
+                    Port choicePort = FindPortInElement(visualElement);
 
-            if (string.IsNullOrEmpty(choiceData.NodeID))
-            {
-                // pas de connexion pour ce choix
-                continue;
-            }
+                    if (choicePort == null)
+                    {
+                        // ce child ne contient pas de port, on l'ignore
+                        continue;
+                    }
 
-            if (!loadedNodes.TryGetValue(choiceData.NodeID, out DSNode nextNode))
-            {
-                Debug.LogWarning($"[LoadNodesConnections] No target node with ID '{choiceData.NodeID}' found for connection from node '{node.DialogueName}'.");
-                continue;
-            }
+                    // userData peut être null ou de type différent => vérifier
+                    if (choicePort.userData == null)
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Port sans userData trouvé dans node '{node.DialogueName}' (ID: {node.ID}). Ignoring.");
+                        continue;
+                    }
 
-            // trouver l'Input port du node cible
-            if (nextNode.inputContainer == null || !nextNode.inputContainer.Children().Any())
-            {
-                Debug.LogWarning($"[LoadNodesConnections] Next node '{nextNode.DialogueName}' has no input ports.");
-                continue;
-            }
+                    if (!(choicePort.userData is DSChoiceSaveData choiceData))
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Port.userData n'est pas un DSChoiceSaveData pour le node '{node.DialogueName}'. Type trouvé: {choicePort.userData.GetType().Name}");
+                        continue;
+                    }
 
-            // trouver le premier Port dans l'inputContainer (ou imbriqué)
-            Port nextNodeInputPort = null;
-            foreach (var iv in nextNode.inputContainer.Children())
-            {
-                nextNodeInputPort = FindPortInElement(iv);
-                if (nextNodeInputPort != null) break;
-            }
+                    if (string.IsNullOrEmpty(choiceData.NodeID))
+                    {
+                        // pas de connexion pour ce choix
+                        continue;
+                    }
 
-            if (nextNodeInputPort == null)
-            {
-                Debug.LogWarning($"[LoadNodesConnections] Could not find an input Port on next node '{nextNode.DialogueName}'.");
-                continue;
-            }
+                    if (!loadedNodes.TryGetValue(choiceData.NodeID, out DSNode nextNode))
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] No target node with ID '{choiceData.NodeID}' found for connection from node '{node.DialogueName}'.");
+                        continue;
+                    }
 
-            // connect and add edge
-            try
+                    // trouver l'Input port du node cible
+                    if (nextNode.inputContainer == null || !nextNode.inputContainer.Children().Any())
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Next node '{nextNode.DialogueName}' has no input ports.");
+                        continue;
+                    }
+
+                    // trouver le premier Port dans l'inputContainer (ou imbriqué)
+                    Port nextNodeInputPort = null;
+                    foreach (var iv in nextNode.inputContainer.Children())
+                    {
+                        nextNodeInputPort = FindPortInElement(iv);
+                        if (nextNodeInputPort != null) break;
+                    }
+
+                    if (nextNodeInputPort == null)
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Could not find an input Port on next node '{nextNode.DialogueName}'.");
+                        continue;
+                    }
+
+                    // connect and add edge
+                    try
+                    {
+                        Edge edge = choicePort.ConnectTo(nextNodeInputPort);
+                        graphView.AddElement(edge);
+                        node.RefreshPorts();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[LoadNodesConnections] Failed to create edge between '{node.DialogueName}' and '{nextNode.DialogueName}': {ex.Message}");
+                    }
+                } 
+            }
+            // ----- Reconnect Start-node NextDialogueNodeID (fallback) -----
+            foreach (var kv in loadedNodes)
             {
-                Edge edge = choicePort.ConnectTo(nextNodeInputPort);
+                DSNode srcNode = kv.Value;
+                if (srcNode == null || srcNode.Saves == null) continue;
+
+                string nextId = srcNode.Saves.NextDialogueNodeID;
+                if (string.IsNullOrEmpty(nextId)) continue;
+
+                if (!loadedNodes.TryGetValue(nextId, out DSNode targetNode))
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] Start next node ID '{nextId}' not found for {srcNode.DialogueName}");
+                    continue;
+                }
+
+                // find first output port on srcNode
+                Port srcOutPort = null;
+                foreach (var ve in srcNode.outputContainer.Children())
+                {
+                    srcOutPort = FindPortInElement(ve);
+                    if (srcOutPort != null) break;
+                }
+
+                if (srcOutPort == null)
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] No output port found on source node {srcNode.DialogueName}");
+                    continue;
+                }
+
+                // find first input port on target node
+                Port targetInPort = null;
+                foreach (var ve in targetNode.inputContainer.Children())
+                {
+                    targetInPort = FindPortInElement(ve);
+                    if (targetInPort != null) break;
+                }
+                if (targetInPort == null)
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] No input port found on target node {targetNode.DialogueName}");
+                    continue;
+                }
+
+                Edge edge = srcOutPort.ConnectTo(targetInPort);
                 graphView.AddElement(edge);
-                node.RefreshPorts();
+                srcNode.RefreshPorts();
             }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[LoadNodesConnections] Failed to create edge between '{node.DialogueName}' and '{nextNode.DialogueName}': {ex.Message}");
-            }
+
         }
-    }
-}
 
         private static void CreateDefaultFolders()
         {
@@ -572,7 +617,6 @@ public static class DSIOUtility
 
             foreach (DSChoiceSaveData choice in nodeChoices)
             {
-                Debug.Log("Cloning choice with NodeID: " + choice.NodeID);
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
                     NodeID = choice.NodeID
@@ -589,6 +633,35 @@ public static class DSIOUtility
             }
 
             return choices;
+        }
+        
+        private static void SyncChoicesFromEdges_SingleTarget()
+        {
+            if (nodes == null || graphView == null) return;
+
+            foreach (var n in nodes)
+            {
+                if (n?.Saves?.choicesInNode == null) continue;
+                foreach (var c in n.Saves.choicesInNode)
+                    c.NodeID = null;
+            }
+
+            var edges = graphView.graphElements.OfType<Edge>().ToList();
+            foreach (var edge in edges)
+            {
+                var outPort = edge.output;
+                var inPort = edge.input;
+                if (outPort == null || inPort == null) continue;
+
+                if (outPort.userData is DSChoiceSaveData choiceData && inPort.node is DSNode targetNode)
+                {
+                    choiceData.NodeID = targetNode.ID;
+                }
+                else if (outPort.node is DSStartNode startNode && inPort.node is DSNode tNode)
+                {
+                    startNode.Saves.NextDialogueNodeID = tNode.ID;
+                }
+            }
         }
 
     }

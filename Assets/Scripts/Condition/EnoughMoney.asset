@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d82135e0ab9de4b862bbe4b961487c, type: 3}
   m_Name: EnoughMoney
   m_EditorClassIdentifier: Assembly-CSharp::ConditionsSC
-  conditionName: saluy
+  conditionName: enough money ?
   conditionValue: 10

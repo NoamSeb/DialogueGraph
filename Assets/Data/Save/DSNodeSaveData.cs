@@ -40,12 +40,10 @@ public class DSNodeSaveData
     public void SetChoices(List<DSChoiceSaveData> choicesSaveData)
     {
         choicesInNode = choicesSaveData;
-        Debug.Log("Choices SET in Node Save Data: " + choicesInNode.Count);
     }
     public void AddChoice(DSChoiceSaveData choiceSaveData)
     {
         choicesInNode.Add(choiceSaveData);
-        Debug.Log("Choice ADDED in Node Save Data: " + choicesInNode.Count);
     }
     [field: SerializeField] public List<DSChoiceSaveData> choicesInNode { get; private set; }
     

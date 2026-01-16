@@ -41,6 +41,9 @@ using UnityEngine.UIElements;
 
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
+            
+          //  this.graphViewChanged += OnGraphViewChanged;
+
             editorWindow = dsEditorWindow;
 
             ungroupedNodes = new SerializableDictionary<string, DSNodeErrorData>();
@@ -61,6 +64,9 @@ using UnityEngine.UIElements;
             AddStyles();
             AddMiniMapStyles();
         }
+        
+
+
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
@@ -328,9 +334,17 @@ using UnityEngine.UIElements;
                     foreach (Edge edge in changes.edgesToCreate)
                     {
                         DSNode nextNode = (DSNode) edge.input.node;
-
+                        if (nextNode == null)
+                        {
+                            Debug.Log("Next node is null");
+                            continue;
+                        }
                         DSChoiceSaveData choiceData = (DSChoiceSaveData) edge.output.userData;
-
+                        if (choiceData == null)
+                        {
+                            Debug.Log("Next node or choice data is null");
+                            continue;
+                        }
                         choiceData.NodeID = nextNode.ID;
                     }
                 }
@@ -631,4 +645,5 @@ using UnityEngine.UIElements;
         {
             miniMap.visible = !miniMap.visible;
         }
+
     }

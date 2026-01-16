@@ -146,67 +146,6 @@ public class DSMultipleChoiceNode : DSNode
         RefreshExpandedState();
     }
 
-    private (Port,DropdownField) CreateChoicePort(object userData)
-    {
-        Port choicePort = this.CreatePort();
-
-        choicePort.userData = userData;
-
-        DSChoiceSaveData choiceData = (DSChoiceSaveData)userData;
-        DropdownField choiceDropdown = DSElementUtility.CreateDropdownArea("Choice KEY");
-        
-        if (Saves.isMultipleChoice)
-        {
-            FillCsvDropdown(choiceDropdown);
-            choiceDropdown.RegisterValueChangedCallback(callback => { OnDropDownChoiceTranslate(choicePort, choiceDropdown, choiceData); });
-            choicePort.Add(choiceDropdown);
-        }
-        else
-        {
-            Label choiceLabel = new Label("Continue");
-            choicePort.Add(choiceLabel);
-        }
-
-
-        if (Saves.isMultipleChoice)
-        {
-            if (Saves.choicesInNode.Count > 2)
-            {
-                Button deleteChoiceButton = DSElementUtility.CreateButton("X", () =>
-                {
-                    if (choicePort.connected)
-                    {
-                        graphView.DeleteElements(choicePort.connections);
-                    }
-
-                    if (Saves.ConditionsMapElement.TryGetValue(choicePort, out List<VisualElement> condElem))
-                    {
-                        ClearConditions(condElem);
-                        Saves.ConditionsMapElement.Remove(choicePort);
-                    }
-
-                    Saves.choicesInNode.Remove(choiceData);
-                    graphView.RemoveElement(choicePort);
-
-                });
-                deleteChoiceButton.AddToClassList("ds-node__buttonDelete");
-                choicePort.Add(deleteChoiceButton);
-            }
-        }
-
-        if (Saves.isMultipleChoice)
-        {
-            Button conditionsButton = DSElementUtility.CreateButton("Add Conditions", () => { AddConditionsBelowPort(choicePort, CreateConditions(choicePort)); });
-            conditionsButton.AddToClassList("ds-node__button");
-            choicePort.Add(conditionsButton);
-        }
-
-
-        _choicePorts.Add(choicePort);
-
-        return (choicePort, choiceDropdown);
-    }
-
     private void OnDropDownChoiceTranslate(Port choicePort, DropdownField dropdown, DSChoiceSaveData choiceData)
     {
         if (_choicePortsTextField.TryGetValue(choicePort, out TextField textField))
