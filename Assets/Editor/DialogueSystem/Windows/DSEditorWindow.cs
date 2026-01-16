@@ -16,7 +16,7 @@ using UnityEngine.UIElements;
         private Button saveButton;
         private Button miniMapButton;
 
-        [MenuItem("Window/DS/Dialogue Graph")]
+        [MenuItem("Graph/Dialogue Graph")]
         public static void Open()
         {
             GetWindow<DSEditorWindow>("Dialogue Graph");

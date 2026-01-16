@@ -177,10 +177,7 @@ public class DSNode : Node
         if (Speaker != 0)
         {
             speakerName = Enum.GetName(typeof(Espeaker), Speaker);
-            Debug.Log("Speaker ame = " + speakerName);
         }
-        Debug.Log("Speaker ame = " + speakerName);
-
         List<string> keys = FantasyDialogueTable.FindAll_Keys(speakerName);
         if (keys == null) return;
         foreach (string key in keys)
