@@ -23,6 +23,8 @@ public class DSNode : Node
     private Color defaultBackgroundColor;
 
     private TextField _fieldLabel;
+    
+    private DropdownField _dropdownFieldDialogue;
 
     public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
     {
@@ -118,21 +120,21 @@ public class DSNode : Node
 
         Foldout textFoldout = DSElementUtility.CreateFoldout("Dialogue Text");
 
-        var dp = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose a key ->");
-        FillCsvDropdown(dp);
+        _dropdownFieldDialogue = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose a key ->");
+        FillCsvDropdown(_dropdownFieldDialogue);
+        
 
+        _dropdownFieldDialogue.RegisterValueChangedCallback((ChangeEvent<string> evt) => OnDropdownEvent(_dropdownFieldDialogue));
 
-        dp.RegisterValueChangedCallback((ChangeEvent<string> evt) => OnDropdownEvent(dp));
-
-        textFoldout.Add(dp);
+        textFoldout.Add(_dropdownFieldDialogue);
 
         _fieldLabel = DSElementUtility.CreateTextField("waiting for key...");
         textFoldout.Add(_fieldLabel);
 
         if (Saves.GetDropDownKeyDialogue() != "")
         {
-            dp.value = Saves.GetDropDownKeyDialogue();
-            OnDropdownEvent(dp);
+            _dropdownFieldDialogue.value = Saves.GetDropDownKeyDialogue();
+            OnDropdownEvent(_dropdownFieldDialogue);
         }
 
         customDataContainer.Add(textFoldout);
@@ -152,16 +154,21 @@ public class DSNode : Node
 
         _fieldLabel.value = FantasyDialogueTable.LocalManager.GetAllDialogueFromValue(dropdownField.value);
         Saves.SaveDropDownKeyDialogue(dropdownField.value);
+        
+
     }
 
     public void FillCsvDropdown(DropdownField dropdownField)
     {
         dropdownField.choices.Clear();
+        
         string speakerName = null;
         if (Speaker != 0)
         {
-            speakerName = Speaker.ToString();
+            speakerName = Enum.GetName(typeof(Espeaker), Speaker);
+            Debug.Log("Speaker ame = " + speakerName);
         }
+        Debug.Log("Speaker ame = " + speakerName);
 
         List<string> keys = FantasyDialogueTable.FindAll_Keys(speakerName);
         if (keys == null) return;
@@ -228,5 +235,18 @@ public class DSNode : Node
     public void SetSpeaker(Espeaker speaker)
     {
         Speaker = speaker;
+        string speakerName = null;
+        if (Speaker != 0)
+        {
+            speakerName = Enum.GetName(typeof(Espeaker), Speaker);
+        }
+
+        List<string> keys = FantasyDialogueTable.FindAll_Keys(speakerName);
+        Debug.Log(keys.Count);
+        _dropdownFieldDialogue.choices.Clear();
+        foreach (string key in keys)
+        {
+            _dropdownFieldDialogue.choices.Add(key);
+        }
     }
 }
