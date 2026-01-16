@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: caaa76378291a144d849f29230be0a5a, type: 3}
-  m_Name: DialoguesFileName
-  m_EditorClassIdentifier: Assembly-CSharp::DS.ScriptableObjects.DSDialogueContainerSO
-  <FileName>k__BackingField: DialoguesFileName
+  m_Name: TestHelp
+  m_EditorClassIdentifier: Assembly-CSharp::DSDialogueContainerSO
+  <FileName>k__BackingField: 
   <DialogueGroups>k__BackingField:
     list: []
   <UngroupedDialogues>k__BackingField: []

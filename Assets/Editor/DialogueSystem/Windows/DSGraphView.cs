@@ -41,11 +41,10 @@ using UnityEngine.UIElements;
 
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
-            editorWindow = dsEditorWindow;
             
-            ungroupedNodes = new SerializableDictionary<string, DSNodeErrorData>();
-            groupedNodes = new SerializableDictionary<Group, SerializableDictionary<string, DSNodeErrorData>>();
+          //  this.graphViewChanged += OnGraphViewChanged;
 
+            editorWindow = dsEditorWindow;
 
             ungroupedNodes = new SerializableDictionary<string, DSNodeErrorData>();
             groups = new SerializableDictionary<string, DSGroupErrorData>();
@@ -65,6 +64,9 @@ using UnityEngine.UIElements;
             AddStyles();
             AddMiniMapStyles();
         }
+        
+
+
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
@@ -148,19 +150,22 @@ using UnityEngine.UIElements;
         
         public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
-            
-            Type nodeType = Type.GetType($"DS{dialogueType}Node");
+            FantasyDialogueTable.Load();
+
+           Type nodeType = Type.GetType($"DS{dialogueType}Node");
             if (nodeType == null)
             {
                 throw new Exception($"Node type for dialogue type {dialogueType} not found");
             }
             
+           
             DSNode node = (DSNode) Activator.CreateInstance(nodeType);
             if (node == null)
             {
                 throw new Exception($"Failed to create node of type {nodeType}");
             }
-
+            
+           
             node.Initialize(nodeName, this, position);
 
             if (shouldDraw)
@@ -329,9 +334,17 @@ using UnityEngine.UIElements;
                     foreach (Edge edge in changes.edgesToCreate)
                     {
                         DSNode nextNode = (DSNode) edge.input.node;
-
+                        if (nextNode == null)
+                        {
+                            Debug.Log("Next node is null");
+                            continue;
+                        }
                         DSChoiceSaveData choiceData = (DSChoiceSaveData) edge.output.userData;
-
+                        if (choiceData == null)
+                        {
+                            Debug.Log("Next node or choice data is null");
+                            continue;
+                        }
                         choiceData.NodeID = nextNode.ID;
                     }
                 }
@@ -360,48 +373,46 @@ using UnityEngine.UIElements;
 
         public void AddUngroupedNode(DSNode node)
         {
-            if (node == null)
-                return;
-
-            if (string.IsNullOrEmpty(node.DialogueName))
+            if(node == null)
             {
-                node.DialogueName = $"Node_{node.ID}";
+                throw new ArgumentNullException(nameof(node), "Node cannot be null");
             }
-
+            if(string.IsNullOrEmpty(node.DialogueName))
+            {
+                return;
+            }
             string nodeName = node.DialogueName.ToLower();
 
             if (!ungroupedNodes.ContainsKey(nodeName))
             {
                 DSNodeErrorData nodeErrorData = new DSNodeErrorData();
+
                 nodeErrorData.Nodes.Add(node);
 
                 ungroupedNodes.Add(nodeName, nodeErrorData);
+
                 return;
             }
 
             List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
+
             ungroupedNodesList.Add(node);
 
             Color errorColor = ungroupedNodes[nodeName].ErrorData.Color;
+
             node.SetErrorStyle(errorColor);
 
             if (ungroupedNodesList.Count == 2)
             {
                 ++NameErrorsAmount;
+
                 ungroupedNodesList[0].SetErrorStyle(errorColor);
             }
         }
 
-
         public void RemoveUngroupedNode(DSNode node)
         {
-            //string nodeName = node.DialogueName.ToLower();
-            
-            if (string.IsNullOrEmpty(node.DialogueName))
-                return;
-
             string nodeName = node.DialogueName.ToLower();
-
 
             List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
 
@@ -634,4 +645,5 @@ using UnityEngine.UIElements;
         {
             miniMap.visible = !miniMap.visible;
         }
+
     }

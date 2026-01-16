@@ -9,197 +9,203 @@ public class DSNode : Node
 {
     public string ID { get; set; }
     public string DialogueName { get; set; }
-    public string Text { get; set; }
     public Espeaker Speaker { get; set; }
+    public DSNodeSaveData Saves { get; set; }
+    public string Text { get; set; }
+
+    public DropdownField DialogueTypeField { get; set; }
+    public Label LanguageLabel { get; set; }
     public DSDialogueType DialogueType { get; set; }
     public DSGroup Group { get; set; }
-    public DSNodeSaveData Saves { get; set; }
 
     protected DSGraphView graphView;
+
     private Color defaultBackgroundColor;
 
-    private TextField _previewField;
+    private TextField _fieldLabel;
 
-    #region INITIALIZATION
+    public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+    {
+        evt.menu.AppendAction("Disconnect Input Ports", actionEvent => DisconnectInputPorts());
+        evt.menu.AppendAction("Disconnect Output Ports", actionEvent => DisconnectOutputPorts());
+
+        base.BuildContextualMenu(evt);
+    }
 
     public virtual void Initialize(string nodeName, DSGraphView dsGraphView, Vector2 position)
     {
         ID = Guid.NewGuid().ToString();
-        DialogueName = DSIOUtility.CheckNameWithOthers(nodeName);
-        Text = "Dialogue text.";
-        Speaker = Espeaker.None;
 
-        Saves = new DSNodeSaveData
-        {
-            ChoicesInNode = new List<DSChoiceSaveData>()
-        };
+        DialogueName = nodeName;
+        
+        Saves = new DSNodeSaveData();
+        Saves.SetChoices(new List<DSChoiceSaveData>());
+        
+        Text = "Dialogue text.";
+        SetPosition(new Rect(position, Vector2.zero));
 
         graphView = dsGraphView;
         defaultBackgroundColor = new Color(29f / 255f, 29f / 255f, 30f / 255f);
-
-        SetPosition(new Rect(position, Vector2.zero));
 
         mainContainer.AddToClassList("ds-node__main-container");
         extensionContainer.AddToClassList("ds-node__extension-container");
     }
 
-    #endregion
-
-    #region DRAW
-
     public virtual void Draw()
     {
-        DrawTitle();
-        DrawInput();
-        DrawCustomData();
-        RefreshExpandedState();
-    }
-
-    private void DrawTitle()
-    {
-        TextField nameField = DSElementUtility.CreateTextField(DialogueName, null, evt =>
+        
+        /* TITLE CONTAINER */
+        
+        TextField dialogueNameTextField = DSElementUtility.CreateTextField(DialogueName, null, (ChangeEvent<string> evt) =>
         {
-            string newValue = evt.newValue.RemoveWhitespaces().RemoveSpecialCharacters();
+            var target = (TextField)evt.target;
+            string newValue = evt.newValue;
+            try
+            {
+                newValue = newValue.RemoveWhitespaces().RemoveSpecialCharacters();
+            }
+            catch
+            {
+            }
 
-            if (string.IsNullOrEmpty(DialogueName) && !string.IsNullOrEmpty(newValue))
-                graphView.NameErrorsAmount--;
-
-            if (!string.IsNullOrEmpty(DialogueName) && string.IsNullOrEmpty(newValue))
+            bool wasEmpty = string.IsNullOrEmpty(DialogueName);
+            bool nowEmpty = string.IsNullOrEmpty(newValue);
+            if (wasEmpty && !nowEmpty)
+            {
+                graphView.NameErrorsAmount = Math.Max(0, graphView.NameErrorsAmount - 1);
+            }
+            else if (!wasEmpty && nowEmpty)
+            {
                 graphView.NameErrorsAmount++;
+            }
 
-            DialogueName = newValue;
+            if (Group == null)
+            {
+                graphView.RemoveUngroupedNode(this);
+                DialogueName = newValue;
+                graphView.AddUngroupedNode(this);
+            }
+            else
+            {
+                var currentGroup = Group;
+                graphView.RemoveGroupedNode(this, currentGroup);
+                DialogueName = newValue;
+                graphView.AddGroupedNode(this, currentGroup);
+            }
+
+            target.value = newValue;
         });
 
-        nameField.AddClasses(
-            "ds-node__text-field",
-            "ds-node__filename-text-field"
-        );
+        dialogueNameTextField.AddToClassList("ds-node__text-field");
+        dialogueNameTextField.AddToClassList("ds-node__text-field__hidden");
+        dialogueNameTextField.AddToClassList("ds-node__filename-text-field");
 
-        titleContainer.Insert(0, nameField);
+        titleContainer.Insert(0, dialogueNameTextField);
 
-        EnumField speakerField = new EnumField(Speaker);
-        speakerField.RegisterValueChangedCallback(evt =>
-        {
-            Speaker = (Espeaker)evt.newValue;
-        });
+        EnumField speakerEnumField = new EnumField("", Speaker);
+        speakerEnumField.RegisterValueChangedCallback(callback => SetSpeaker((Espeaker)callback.newValue));
+        titleContainer.Add(speakerEnumField);
 
-        titleContainer.Add(speakerField);
-    }
-
-    private void DrawInput()
-    {
-        Port inputPort = this.CreatePort(
-            "Dialogue Connection",
-            Orientation.Horizontal,
-            Direction.Input,
-            Port.Capacity.Multi
-        );
-
+        /* INPUT CONTAINER */
+        Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
         inputContainer.Add(inputPort);
-    }
 
-    private void DrawCustomData()
-    {
-        VisualElement container = new VisualElement();
-        container.AddToClassList("ds-node__custom-data-container");
+        /* EXTENSION CONTAINER */
+        VisualElement customDataContainer = new VisualElement();
+        customDataContainer.AddToClassList("ds-node__custom-data-container");
 
-        Foldout foldout = DSElementUtility.CreateFoldout("Dialogue Text");
+        Foldout textFoldout = DSElementUtility.CreateFoldout("Dialogue Text");
 
-        TextField textField = DSElementUtility.CreateTextArea(Text, null, evt =>
-        {
-            Text = evt.newValue;
-        });
+        var dp = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose a key ->");
+        FillCsvDropdown(dp);
 
-        textField.AddClasses(
-            "ds-node__text-field",
-            "ds-node__quote-text-field"
-        );
-
-        foldout.Add(textField);
-
-        DropdownField dropdown = DSElementUtility.CreateDropdownArea("Dialogue Key", "Choose key");
-        FillCsvDropdown(dropdown);
-
-        dropdown.RegisterValueChangedCallback(_ => UpdatePreview(dropdown));
-
-        //_previewField = DSElementUtility.CreateTextField("", true);
-        _previewField = DSElementUtility.CreateTextField("", null, null);
-        _previewField.isReadOnly = true;
 
         
-        _previewField.isReadOnly = true;
+        dp.RegisterValueChangedCallback((ChangeEvent<string> evt) => OnDropdownEvent(dp));
 
-        foldout.Add(dropdown);
-        foldout.Add(_previewField);
+        textFoldout.Add(dp);
 
-        container.Add(foldout);
-        extensionContainer.Add(container);
-    }
-
-    #endregion
-
-    #region CSV / PREVIEW
-
-    protected void FillCsvDropdown(DropdownField dropdown)
-    {
-        dropdown.choices.Clear();
-        dropdown.choices.AddRange(FantasyDialogueTable.FindAll_Keys());
-    }
-
-    private void UpdatePreview(DropdownField dropdown)
-    {
-        if (string.IsNullOrEmpty(dropdown.value))
+        _fieldLabel = DSElementUtility.CreateTextField("waiting for key...");
+        textFoldout.Add(_fieldLabel);
+        
+        if (Saves.GetDropDownKeyDialogue() != "")
         {
-            _previewField.value = "";
-            return;
+            dp.value = Saves.GetDropDownKeyDialogue();
+            OnDropdownEvent(dp);
         }
-
-        List<string> values = FantasyDialogueTable.LocalManager
-            .FindAllDialogueForKey(dropdown.value);
-
-        List<string> langs = FantasyDialogueTable.LocalManager
-            .FindAllDialogueForKey("idLng");
-
-        _previewField.value = "";
-
-        for (int i = 0; i < Mathf.Min(values.Count, langs.Count); i++)
-        {
-            _previewField.value += $"{langs[i]} : {values[i]}";
-            if (i < values.Count - 1)
-                _previewField.value += "\n";
-        }
+        customDataContainer.Add(textFoldout);
+        extensionContainer.Add(customDataContainer);
     }
-
-    #endregion
-
-    #region PORT MANAGEMENT
 
     public void DisconnectAllPorts()
     {
+        DisconnectInputPorts();
+        DisconnectOutputPorts();
+    }
+
+    private void OnDropdownEvent(DropdownField dropdownField)
+    {
+        if (_fieldLabel == null)
+            return;
+
+        _fieldLabel.value = FantasyDialogueTable.LocalManager.GetAllDialogueFromValue(dropdownField.value);
+        Saves.SaveDropDownKeyDialogue(dropdownField.value);
+    }
+    
+    public void FillCsvDropdown(DropdownField dropdownField)
+    {
+        dropdownField.choices.Clear();
+        List<string> keys = FantasyDialogueTable.FindAll_Keys();
+        if (keys == null) return;
+        foreach (string key in keys)
+        {
+            dropdownField.choices.Add(key);
+        }
+    }
+
+    private void DisconnectInputPorts()
+    {
         DisconnectPorts(inputContainer);
+    }
+
+    private void DisconnectOutputPorts()
+    {
         DisconnectPorts(outputContainer);
     }
 
     private void DisconnectPorts(VisualElement container)
     {
-        if (container == null) return;
-
-        foreach (Port port in container.Children().OfType<Port>())
+        if (container == null)
         {
-            if (port.connected)
-                graphView.DeleteElements(port.connections);
+            return;
+        }
+
+        foreach (var visualElement in container.Children().ToList())
+        {
+            var port = visualElement as Port;
+            if (port == null)
+            {
+                continue;
+            }
+
+            if (!port.connected)
+            {
+                continue;
+            }
+
+            // Suppression des connexions existantes
+            graphView.DeleteElements(port.connections);
         }
     }
 
     public bool IsStartingNode()
     {
-        Port inputPort = inputContainer.Children().OfType<Port>().FirstOrDefault();
-        return inputPort != null && !inputPort.connected;
+        if (!inputContainer.Children().Any())
+            return true;
+
+        Port inputPort = (Port)inputContainer.Children().First();
+        return !inputPort.connected;
     }
-
-    #endregion
-
-    #region STYLE
 
     public void SetErrorStyle(Color color)
     {
@@ -211,11 +217,8 @@ public class DSNode : Node
         mainContainer.style.backgroundColor = defaultBackgroundColor;
     }
 
-    #endregion
-    
     public void SetSpeaker(Espeaker speaker)
     {
         Speaker = speaker;
     }
-
 }

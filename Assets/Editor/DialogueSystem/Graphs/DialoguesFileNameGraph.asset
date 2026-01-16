@@ -14,62 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp-Editor::DS.Data.Save.DSGraphSaveDataSO
   <FileName>k__BackingField: DialoguesFileName
   <Groups>k__BackingField: []
-  <Nodes>k__BackingField:
-  - <ID>k__BackingField: 796f4600-4155-4184-8b1b-4e4f772a48f6
-    <Name>k__BackingField: e
-    <Speaker>k__BackingField: 1
-    isMultipleChoice: 0
-    <Text>k__BackingField: "par piti\xE9"
-    <ChoicesInNode>k__BackingField:
-    - <DropDownKey>k__BackingField: 
-      <NodeID>k__BackingField: aab5ea97-8631-47f3-b52b-170dd3b6a91b
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1215.3334, y: 519.3333}
-    <NextDialogueNodeID>k__BackingField: 
-  - <ID>k__BackingField: 439f85a6-80aa-42e7-857d-8e22b0ddbdaa
-    <Name>k__BackingField: ee
-    <Speaker>k__BackingField: 2
-    isMultipleChoice: 0
-    <Text>k__BackingField: aidez moi 1
-    <ChoicesInNode>k__BackingField:
-    - <DropDownKey>k__BackingField: help
-      <NodeID>k__BackingField: 796f4600-4155-4184-8b1b-4e4f772a48f6
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1923.3334, y: 384.66666}
-    <NextDialogueNodeID>k__BackingField: 
-  - <ID>k__BackingField: aab5ea97-8631-47f3-b52b-170dd3b6a91b
-    <Name>k__BackingField: x
-    <Speaker>k__BackingField: 3
-    isMultipleChoice: 0
-    <Text>k__BackingField: sauvez moi
-    <ChoicesInNode>k__BackingField:
-    - <DropDownKey>k__BackingField: 
-      <NodeID>k__BackingField: 3a119190-c7cb-452c-92a6-2ba3dafd2123
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1227.3334, y: 186}
-    <NextDialogueNodeID>k__BackingField: 
-  - <ID>k__BackingField: 3a119190-c7cb-452c-92a6-2ba3dafd2123
-    <Name>k__BackingField: DialogueName
-    <Speaker>k__BackingField: 1
-    isMultipleChoice: 1
-    <Text>k__BackingField: help
-    <ChoicesInNode>k__BackingField:
-    - <DropDownKey>k__BackingField: 
-      <NodeID>k__BackingField: aab5ea97-8631-47f3-b52b-170dd3b6a91b
-    - <DropDownKey>k__BackingField: 
-      <NodeID>k__BackingField: 796f4600-4155-4184-8b1b-4e4f772a48f6
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 581.3333, y: 344}
-    <NextDialogueNodeID>k__BackingField: 
+  <Nodes>k__BackingField: []
   <OldGroupNames>k__BackingField: []
-  <OldUngroupedNodeNames>k__BackingField:
-  - e
-  - ee
-  - x
-  - DialogueName
+  <OldUngroupedNodeNames>k__BackingField: []
   <OldGroupedNodeNames>k__BackingField:
     list: []

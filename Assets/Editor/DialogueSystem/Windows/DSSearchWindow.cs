@@ -22,11 +22,6 @@ using UnityEngine;
             {
                 new SearchTreeGroupEntry(new GUIContent("Create Elements")),
                 new SearchTreeGroupEntry(new GUIContent("Dialogue Nodes"), 1),
-                new SearchTreeEntry(new GUIContent("Single Choice", indentationIcon))
-                {
-                    userData = DSDialogueType.SingleChoice,
-                    level = 2
-                },
                 new SearchTreeEntry(new GUIContent("Multiple Choice", indentationIcon))
                 {
                     userData = DSDialogueType.MultipleChoice,
@@ -49,14 +44,6 @@ using UnityEngine;
 
             switch (SearchTreeEntry.userData)
             {
-                case DSDialogueType.SingleChoice:
-                {
-                    DSSingleChoiceNode singleChoiceNode = (DSSingleChoiceNode) graphView.CreateNode("DialogueName", DSDialogueType.SingleChoice, localMousePosition);
-
-                    graphView.AddElement(singleChoiceNode);
-
-                    return true;
-                }
 
                 case DSDialogueType.MultipleChoice:
                 {

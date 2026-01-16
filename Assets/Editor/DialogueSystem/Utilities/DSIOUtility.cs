@@ -6,15 +6,16 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-    public static class DSIOUtility
+public static class DSIOUtility
     {
         private static DSGraphView graphView;
 
         private static string graphFileName;
         private static string containerFolderPath;
 
-        private static List<DSNode> nodes; 
+        private static List<DSNode> nodes = new List<DSNode>(); 
         private static List<DSGroup> groups;
 
         private static Dictionary<string, DSDialogueGroupSO> createdDialogueGroups;
@@ -46,17 +47,39 @@ using UnityEngine;
 
         public static void Save()
         {
+            nodes.Clear();
+            groups = new List<DSGroup>();
+            
+            createdDialogueGroups = new Dictionary<string, DSDialogueGroupSO>();
+            createdDialogues = new Dictionary<string, DSDialogueSO>();
+
             CreateDefaultFolders();
 
             GetElementsFromGraphView();
 
+            // Load or create asset
             DSGraphSaveDataSO graphData = CreateAsset<DSGraphSaveDataSO>("Assets/Editor/DialogueSystem/Graphs", $"{graphFileName}Graph");
 
-            graphData.Initialize(graphFileName);
+            // Ensure asset lists are cleared before we repopulate them
+            if (graphData.Nodes == null) graphData.Nodes = new List<DSNodeSaveData>();
+            else graphData.Nodes.Clear();
+
+            if (graphData.Groups == null) graphData.Groups = new List<DSGroupSaveData>();
+            else graphData.Groups.Clear();
+
+            // If graphData has old collections for names, clear them too (defensive)
+            if (graphData.OldGroupNames == null) graphData.OldGroupNames = new List<string>();
+            if (graphData.OldGroupedNodeNames == null) graphData.OldGroupedNodeNames = new SerializableDictionary<string, List<string>>();
+            if (graphData.OldUngroupedNodeNames == null) graphData.OldUngroupedNodeNames = new List<string>();
+
+            graphData.Initialize(graphFileName); // si Initialize réinitialise certains champs, ok
 
             DSDialogueContainerSO dialogueContainer = CreateAsset<DSDialogueContainerSO>(containerFolderPath, graphFileName);
-
+            // clear dialogue container entries before repopulating (defensive)
             dialogueContainer.Initialize(graphFileName);
+            
+            
+            SyncChoicesFromEdges_SingleTarget();
 
             SaveGroups(graphData, dialogueContainer);
             SaveNodes(graphData, dialogueContainer);
@@ -64,6 +87,7 @@ using UnityEngine;
             SaveAsset(graphData);
             SaveAsset(dialogueContainer);
         }
+
 
         private static void SaveGroups(DSGraphSaveDataSO graphData, DSDialogueContainerSO dialogueContainer)
         {
@@ -153,25 +177,27 @@ using UnityEngine;
 
         private static void SaveNodeToGraph(DSNode node, DSGraphSaveDataSO graphData)
         {
-            List<DSChoiceSaveData> choices = CloneNodeChoices(node.Saves.ChoicesInNode);
+            List<DSChoiceSaveData> choices = CloneNodeChoices(node.Saves.choicesInNode);
 
             DSNodeSaveData nodeData = new DSNodeSaveData()
             {
                 ID = node.ID,
                 Name = node.DialogueName,
-                ChoicesInNode = choices,
                 Text = node.Text,
                 GroupID = node.Group?.ID,
                 DialogueType = node.DialogueType,
                 Position = node.GetPosition().position,
                 isMultipleChoice = node.Saves.isMultipleChoice,
-                ConditionsMap = node.Saves.ConditionsMap,
+                NextDialogueNodeID = node.Saves.NextDialogueNodeID // <- AJOUT
             };
 
+            nodeData.SaveDropDownKeyDialogue(node.Saves.GetDropDownKeyDialogue());
             nodeData.SaveSpeaker(node.Speaker);
-            
+            nodeData.SetChoices(choices);
+
             graphData.Nodes.Add(nodeData);
         }
+
 
         private static void SaveNodeToScriptableObject(DSNode node, DSDialogueContainerSO dialogueContainer)
         {
@@ -193,7 +219,7 @@ using UnityEngine;
             dialogue.Initialize(
                 node.DialogueName,
                 node.Text,
-                ConvertNodeChoicesToDialogueChoices(node.Saves.ChoicesInNode),
+                ConvertNodeChoicesToDialogueChoices(node.Saves.choicesInNode),
                 node.DialogueType,
                 node.IsStartingNode(),
                 node.Speaker
@@ -212,14 +238,15 @@ using UnityEngine;
             {
                 DSDialogueChoiceData choiceData = new DSDialogueChoiceData()
                 {
-                    //Text = nodeChoice.Text
+                    // copiers d'autres champs si DSDialogueChoiceData en a (ex : Text, Condition infos)
+                    // NextDialogue left null for now — will be set in UpdateDialoguesChoicesConnections
                 };
-
                 dialogueChoices.Add(choiceData);
             }
 
             return dialogueChoices;
         }
+
 
         private static void UpdateDialoguesChoicesConnections()
         {
@@ -227,9 +254,9 @@ using UnityEngine;
             {
                 DSDialogueSO dialogue = createdDialogues[node.ID];
 
-                for (int choiceIndex = 0; choiceIndex < node.Saves.ChoicesInNode.Count; ++choiceIndex)
+                for (int choiceIndex = 0; choiceIndex < node.Saves.choicesInNode.Count; ++choiceIndex)
                 {
-                    DSChoiceSaveData nodeChoice = node.Saves.ChoicesInNode[choiceIndex];
+                    DSChoiceSaveData nodeChoice = node.Saves.choicesInNode[choiceIndex];
 
                     if (string.IsNullOrEmpty(nodeChoice.NodeID))
                     {
@@ -301,7 +328,7 @@ using UnityEngine;
             DSEditorWindow.UpdateFileName(graphData.FileName);
 
             LoadGroups(graphData.Groups);
-            LoadNodes(graphView, graphData.Nodes);
+            LoadNodes(graphData.Nodes);
             LoadNodesConnections();
         }
 
@@ -317,103 +344,180 @@ using UnityEngine;
             }
         }
 
-        public static void LoadNodes(DSGraphView graphView, List<DSNodeSaveData> nodes)
+        private static void LoadNodes(List<DSNodeSaveData> nodes)
         {
-            
-            if (graphView == null || nodes == null)
-                return;
-
-            foreach (var nodeData in nodes)
+            FantasyDialogueTable.Load();
+            foreach (DSNodeSaveData nodeData in nodes)
             {
-                if (nodeData == null)
-                    continue;
+                List<DSChoiceSaveData> choices = CloneNodeChoices(nodeData.choicesInNode);
 
-                // 1️⃣ Crée le node dans le graph view
-                DSNode node = graphView.CreateNode(
-                    string.IsNullOrEmpty(nodeData.Name) ? $"Node_{nodeData.ID}" : nodeData.Name,
-                    nodeData.DialogueType,
-                    nodeData.Position,
-                    false // On dessine après
-                );
-
-                if (node == null)
-                    continue;
-
-                // 2️⃣ Initialise les valeurs de base
+                DSNode node = graphView.CreateNode(nodeData.Name, nodeData.DialogueType, nodeData.Position, false);
                 node.ID = nodeData.ID;
-                node.DialogueName = string.IsNullOrEmpty(nodeData.Name) ? $"Node_{node.ID}" : nodeData.Name;
-
-                // 3️⃣ Dessine le node maintenant qu'il est initialisé
+                node.Text = nodeData.Text;
+                
+                node.Saves.SaveDropDownKeyDialogue( nodeData.GetDropDownKeyDialogue());
+                node.Saves.SetChoices(choices);
+                node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
+                node.Saves.NextDialogueNodeID = nodeData.NextDialogueNodeID;
+                node.SetSpeaker(nodeData.Speaker);
                 node.Draw();
+                
 
-                // 4️⃣ Si MultipleChoice, charge les choix
-                if (node is DSMultipleChoiceNode multiNode && nodeData.ChoicesInNode != null)
+                graphView.AddElement(node);
+
+                loadedNodes.Add(node.ID, node);
+
+                if (!string.IsNullOrEmpty(nodeData.GroupID))
                 {
-                    multiNode.Saves.ChoicesInNode.Clear();
-                    
-                    foreach (var choiceData in nodeData.ChoicesInNode)
+                    if (loadedGroups.TryGetValue(nodeData.GroupID, out DSGroup group))
                     {
-                        if (choiceData == null)
-                            continue;
-
-                        multiNode.Saves.ChoicesInNode.Add(choiceData);
-
-                        // Crée le port pour chaque choix
-                        Port port = multiNode.CreateChoicePort(choiceData);
-                        multiNode.outputContainer.Add(port);
-
-                        // Si ce choix a des conditions sauvegardées
-                        if (nodeData.ConditionsMap != null && nodeData.ConditionsMap.TryGetValue(port, out var conditionsList))
-                        {
-                            foreach (var cond in conditionsList)
-                            {
-                                if (cond == null)
-                                    continue;
-                        
-                                multiNode.AddConditionsBelowPort(port, cond, false);
-                            }
-                        }
+                        node.Group = group;
+                        group.AddElement(node);
                     }
-
-                    // S'il n'y a aucun choix, créer un choix par défaut
-                    if (multiNode.Saves.ChoicesInNode.Count == 0)
+                    else
                     {
-                        var defaultChoice = new DSChoiceSaveData();
-                        multiNode.Saves.ChoicesInNode.Add(defaultChoice);
-
-                        var port = multiNode.CreateChoicePort(defaultChoice);
-                        multiNode.outputContainer.Add(port);
+                        Debug.LogWarning($"[LoadNodes] Group with ID {nodeData.GroupID} not found for node {nodeData.Name}");
                     }
                 }
             }
         }
 
-
-
         private static void LoadNodesConnections()
-        {
+        { 
+            Port FindPortInElement(VisualElement elem) 
+            { if (elem == null) return null; 
+                if (elem is Port directPort) return directPort;
+                foreach (var child in elem.Children())
+                {
+                    var found = FindPortInElement(child);
+                    if (found != null) return found;
+                }
+                return null;
+            }
+
             foreach (KeyValuePair<string, DSNode> loadedNode in loadedNodes)
             {
-                foreach (Port choicePort in loadedNode.Value.outputContainer.Children())
-                {
-                    DSChoiceSaveData choiceData = (DSChoiceSaveData) choicePort.userData;
+                // defensive: ensure node and its outputContainer exist
+                var node = loadedNode.Value;
+                if (node == null || node.outputContainer == null) continue;
 
-                    if (string.IsNullOrEmpty(choiceData.NodeID))
+                foreach (var visualElement in node.outputContainer.Children())
+                {
+                    // chercher un Port soit à la racine, soit imbriqué
+                    Port choicePort = FindPortInElement(visualElement);
+
+                    if (choicePort == null)
                     {
+                        // ce child ne contient pas de port, on l'ignore
                         continue;
                     }
 
-                    DSNode nextNode = loadedNodes[choiceData.NodeID];
+                    // userData peut être null ou de type différent => vérifier
+                    if (choicePort.userData == null)
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Port sans userData trouvé dans node '{node.DialogueName}' (ID: {node.ID}). Ignoring.");
+                        continue;
+                    }
 
-                    Port nextNodeInputPort = (Port) nextNode.inputContainer.Children().First();
+                    if (!(choicePort.userData is DSChoiceSaveData choiceData))
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Port.userData n'est pas un DSChoiceSaveData pour le node '{node.DialogueName}'. Type trouvé: {choicePort.userData.GetType().Name}");
+                        continue;
+                    }
 
-                    Edge edge = choicePort.ConnectTo(nextNodeInputPort);
+                    if (string.IsNullOrEmpty(choiceData.NodeID))
+                    {
+                        // pas de connexion pour ce choix
+                        continue;
+                    }
 
-                    graphView.AddElement(edge);
+                    if (!loadedNodes.TryGetValue(choiceData.NodeID, out DSNode nextNode))
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] No target node with ID '{choiceData.NodeID}' found for connection from node '{node.DialogueName}'.");
+                        continue;
+                    }
 
-                    loadedNode.Value.RefreshPorts();
-                }
+                    // trouver l'Input port du node cible
+                    if (nextNode.inputContainer == null || !nextNode.inputContainer.Children().Any())
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Next node '{nextNode.DialogueName}' has no input ports.");
+                        continue;
+                    }
+
+                    // trouver le premier Port dans l'inputContainer (ou imbriqué)
+                    Port nextNodeInputPort = null;
+                    foreach (var iv in nextNode.inputContainer.Children())
+                    {
+                        nextNodeInputPort = FindPortInElement(iv);
+                        if (nextNodeInputPort != null) break;
+                    }
+
+                    if (nextNodeInputPort == null)
+                    {
+                        Debug.LogWarning($"[LoadNodesConnections] Could not find an input Port on next node '{nextNode.DialogueName}'.");
+                        continue;
+                    }
+
+                    // connect and add edge
+                    try
+                    {
+                        Edge edge = choicePort.ConnectTo(nextNodeInputPort);
+                        graphView.AddElement(edge);
+                        node.RefreshPorts();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[LoadNodesConnections] Failed to create edge between '{node.DialogueName}' and '{nextNode.DialogueName}': {ex.Message}");
+                    }
+                } 
             }
+            // ----- Reconnect Start-node NextDialogueNodeID (fallback) -----
+            foreach (var kv in loadedNodes)
+            {
+                DSNode srcNode = kv.Value;
+                if (srcNode == null || srcNode.Saves == null) continue;
+
+                string nextId = srcNode.Saves.NextDialogueNodeID;
+                if (string.IsNullOrEmpty(nextId)) continue;
+
+                if (!loadedNodes.TryGetValue(nextId, out DSNode targetNode))
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] Start next node ID '{nextId}' not found for {srcNode.DialogueName}");
+                    continue;
+                }
+
+                // find first output port on srcNode
+                Port srcOutPort = null;
+                foreach (var ve in srcNode.outputContainer.Children())
+                {
+                    srcOutPort = FindPortInElement(ve);
+                    if (srcOutPort != null) break;
+                }
+
+                if (srcOutPort == null)
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] No output port found on source node {srcNode.DialogueName}");
+                    continue;
+                }
+
+                // find first input port on target node
+                Port targetInPort = null;
+                foreach (var ve in targetNode.inputContainer.Children())
+                {
+                    targetInPort = FindPortInElement(ve);
+                    if (targetInPort != null) break;
+                }
+                if (targetInPort == null)
+                {
+                    Debug.LogWarning($"[LoadNodesConnections] No input port found on target node {targetNode.DialogueName}");
+                    continue;
+                }
+
+                Edge edge = srcOutPort.ConnectTo(targetInPort);
+                graphView.AddElement(edge);
+                srcNode.RefreshPorts();
+            }
+
         }
 
         private static void CreateDefaultFolders()
@@ -431,27 +535,29 @@ using UnityEngine;
 
         private static void GetElementsFromGraphView()
         {
+            nodes.Clear();
+            groups = new List<DSGroup>();
+
             Type groupType = typeof(DSGroup);
 
             graphView.graphElements.ForEach(graphElement =>
             {
                 if (graphElement is DSNode node)
                 {
+                    // On ajoute tous les nodes (groupés ou non) — Save() décidera comment les traiter
                     nodes.Add(node);
-
                     return;
                 }
 
                 if (graphElement.GetType() == groupType)
                 {
                     DSGroup group = (DSGroup) graphElement;
-
                     groups.Add(group);
-
                     return;
                 }
             });
         }
+
 
         public static void CreateFolder(string parentFolderPath, string newFolderName)
         {
@@ -507,19 +613,55 @@ using UnityEngine;
 
         private static List<DSChoiceSaveData> CloneNodeChoices(List<DSChoiceSaveData> nodeChoices)
         {
-            List<DSChoiceSaveData> choices = new List<DSChoiceSaveData>();
+            var choices = new List<DSChoiceSaveData>();
 
             foreach (DSChoiceSaveData choice in nodeChoices)
             {
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
-                  //  Text = choice.Text,
                     NodeID = choice.NodeID
                 };
                 
+                choiceData.SaveDropDownKeyChoice(choice.GetDropDownKeyChoice());
+
+                if (choice.Conditions != null && choice.Conditions.Count > 0)
+                    choiceData.Conditions = new List<ConditionsSC>(choice.Conditions);
+                else
+                    choiceData.Conditions = new List<ConditionsSC>();
+
                 choices.Add(choiceData);
             }
 
             return choices;
         }
+        
+        private static void SyncChoicesFromEdges_SingleTarget()
+        {
+            if (nodes == null || graphView == null) return;
+
+            foreach (var n in nodes)
+            {
+                if (n?.Saves?.choicesInNode == null) continue;
+                foreach (var c in n.Saves.choicesInNode)
+                    c.NodeID = null;
+            }
+
+            var edges = graphView.graphElements.OfType<Edge>().ToList();
+            foreach (var edge in edges)
+            {
+                var outPort = edge.output;
+                var inPort = edge.input;
+                if (outPort == null || inPort == null) continue;
+
+                if (outPort.userData is DSChoiceSaveData choiceData && inPort.node is DSNode targetNode)
+                {
+                    choiceData.NodeID = targetNode.ID;
+                }
+                else if (outPort.node is DSStartNode startNode && inPort.node is DSNode tNode)
+                {
+                    startNode.Saves.NextDialogueNodeID = tNode.ID;
+                }
+            }
+        }
+
     }

@@ -7,32 +7,49 @@ using UnityEngine.UIElements;
 
 
 [Serializable]
-    public class DSNodeSaveData
+public class DSNodeSaveData
+{
+    [field: SerializeField] public string ID { get; set; }
+    [field: SerializeField] public string Name { get; set; }
+    [field: SerializeField] public Espeaker Speaker { get; set; }
+
+    public void SaveSpeaker(Espeaker speaker)
     {
-        //[field: SerializeField] public bool IsStart { get; set; }
-        [field: SerializeField] public string ID { get; set; }
-        [field: SerializeField] public string Name { get; set; }
-
-        [field: SerializeField]
-        public Espeaker Speaker
-        {
-            get; 
-            set;
-        }
-        public void SaveSpeaker(Espeaker speaker)
-        {
-            Speaker = speaker;
-            Debug.Log("Saved Speaker: " + Speaker);
-        }
-        
-        public bool isMultipleChoice = false;
-        
-        public Dictionary<Port, List<VisualElement>> ConditionsMap = new Dictionary<Port, List<VisualElement>>();
-
-        [field: SerializeField] public string Text { get; set; }
-        [field: SerializeField] public List<DSChoiceSaveData> ChoicesInNode { get; set; }
-        [field: SerializeField] public string GroupID { get; set; }
-        [field: SerializeField] public DSDialogueType DialogueType { get; set; }
-        [field: SerializeField] public Vector2 Position { get; set; }
-        [field: SerializeField] public string NextDialogueNodeID { get; set; }
+        Speaker = speaker;
     }
+
+    public bool isMultipleChoice = false;
+
+    public Dictionary<Port, List<VisualElement>> ConditionsMapElement = new Dictionary<Port, List<VisualElement>>();
+    public Dictionary<Port, List<ConditionsSC>> ConditionsMapSc = new Dictionary<Port, List<ConditionsSC>>();
+
+    private string _dropDownKeyDialogue;
+
+    public void SaveDropDownKeyDialogue(string key)
+    {
+        _dropDownKeyDialogue = key;
+    }
+
+    public string GetDropDownKeyDialogue()
+    {
+        return _dropDownKeyDialogue;
+    }
+
+    [field: SerializeField] public string Text { get; set; }
+    
+    public void SetChoices(List<DSChoiceSaveData> choicesSaveData)
+    {
+        choicesInNode = choicesSaveData;
+    }
+    public void AddChoice(DSChoiceSaveData choiceSaveData)
+    {
+        choicesInNode.Add(choiceSaveData);
+    }
+    [field: SerializeField] public List<DSChoiceSaveData> choicesInNode { get; private set; }
+    
+    
+    [field: SerializeField] public string GroupID { get; set; }
+    [field: SerializeField] public DSDialogueType DialogueType { get; set; }
+    [field: SerializeField] public Vector2 Position { get; set; }
+    [field: SerializeField] public string NextDialogueNodeID { get; set; }
+}
