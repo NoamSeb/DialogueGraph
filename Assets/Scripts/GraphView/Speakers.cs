@@ -15,3 +15,12 @@ public enum Espeaker
     Gab,
     Margot
 }
+
+
+
+[System.Serializable]
+public enum EUIDisposition
+{
+    classique,
+    envers
+}

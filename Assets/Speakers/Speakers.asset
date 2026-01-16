@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0db76096bd8ebaf4590083a9464b5ac1, type: 3}
+  m_Name: Speakers
+  m_EditorClassIdentifier: Assembly-CSharp::test
+  speakers:
+  - Name: Gab
+    speakEnum: 2
+    Humeur: 0
+    SpritesHumeur:
+    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+      humeur: 0
+    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+      humeur: 2
+    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+      humeur: 1
+  - Name: Noam
+    speakEnum: 1
+    Humeur: 0
+    SpritesHumeur:
+    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+      humeur: 0
+    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+      humeur: 2
+    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+      humeur: 1
+  - Name: Margot
+    speakEnum: 3
+    Humeur: 0
+    SpritesHumeur:
+    - sprite: {fileID: 779523859372869476, guid: 75a103d9661e0de438f3385fffaf88ae, type: 3}
+      humeur: 0
+    - sprite: {fileID: 2754931980570980353, guid: 38cb330609807884b9bfebdf31d381e3, type: 3}
+      humeur: 2
+    - sprite: {fileID: 1831341638132753355, guid: a3c4df80a58e9fa4a9504f1c9a28f627, type: 3}
+      humeur: 1

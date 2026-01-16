@@ -12,10 +12,24 @@ public class DSNodeSaveData
     [field: SerializeField] public string ID { get; set; }
     [field: SerializeField] public string Name { get; set; }
     [field: SerializeField] public Espeaker Speaker { get; set; }
+    
+    [field: SerializeField] public EUIDisposition UIDispo { get; set; }
+    
+    [field: SerializeField] public HumeurSpeaker Humeur { get; set; }
 
     public void SaveSpeaker(Espeaker speaker)
     {
         Speaker = speaker;
+    }
+    
+    public void SaveHumeur(HumeurSpeaker humeur)
+    {
+        Humeur = humeur;
+    }
+
+    public void SaveUIDisposition(EUIDisposition uei)
+    {
+        UIDispo = uei;
     }
 
     public bool isMultipleChoice = false;

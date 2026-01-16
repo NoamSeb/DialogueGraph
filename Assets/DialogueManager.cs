@@ -24,6 +24,7 @@ public class DialogueManager : MonoBehaviour
     [Header("UI Elements")] public GameObject dialoguePanel;
     public TextMeshProUGUI SpeakerNameText;
     public TextMeshProUGUI DialogueText;
+    public Image SpriteSpeakerHumeur;
 
     [Header("Choice Button UI")] public Button ChoiceButtonPrefab;
     public Transform ChoiceButtonContainer;
@@ -184,6 +185,14 @@ public class DialogueManager : MonoBehaviour
     {
         _currentSpeaker = speaker;
         SpeakerNameText.SetText(_currentSpeaker.Name);
+
+        foreach (var humeur in _currentSpeaker.SpritesHumeur)
+        {
+            if (_currentNode.Humeur == humeur.humeur)
+            {
+                SpriteSpeakerHumeur.sprite = humeur.sprite;
+            }
+        }
     }
 
     private DSNodeSaveData GetNodeStart()
