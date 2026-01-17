@@ -13,9 +13,37 @@ public class DSNodeSaveData
     [field: SerializeField] public string Name { get; set; }
     [field: SerializeField] public Espeaker Speaker { get; set; }
 
+    [field: SerializeField] private bubleType BubleType;
+    
+    public void SetBubleType(bubleType bubleType)
+    {
+        BubleType = bubleType;
+    }
+    public bubleType GetBubleType()
+    {
+        return BubleType;
+    }
+
+    [field: SerializeField] private HumeurSpeaker Humeur;
+    public HumeurSpeaker GetHumeur()
+    {
+        return Humeur;
+    }
+    public void SetHumeur(HumeurSpeaker humeur)
+    {
+        Humeur = humeur;
+    }
+    
+    
+
     public void SaveSpeaker(Espeaker speaker)
     {
         Speaker = speaker;
+    }
+    
+    public void SaveHumeur(HumeurSpeaker humeur)
+    {
+        Humeur = humeur;
     }
 
     public bool isMultipleChoice = false;

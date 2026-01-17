@@ -158,8 +158,6 @@ public static class DSIOUtility
             {
                 SaveNodeToGraph(node, graphData);
                 SaveNodeToScriptableObject(node, dialogueContainer);
-
-                
                 
                 if (node.Group != null)
                 {
@@ -189,12 +187,14 @@ public static class DSIOUtility
                 DialogueType = node.DialogueType,
                 Position = node.GetPosition().position,
                 isMultipleChoice = node.Saves.isMultipleChoice,
-             //   NextDialogueNodeID = node.Saves.NextDialogueNodeID // <- AJOUT
             };
 
+            Debug.Log("HUMEUR SAVE NODE = " + node.Humeur);
+
+            nodeData.SetBubleType(node.BubleType);
             nodeData.SaveDropDownKeyDialogue(node.Saves.GetDropDownKeyDialogue());
-            Debug.Log("Saving Node Dialogue Key = " + node.Saves.GetDropDownKeyDialogue());
             nodeData.SaveSpeaker(node.Speaker);
+            nodeData.SaveHumeur(node.Humeur);
             nodeData.SetChoices(choices);
 
             graphData.Nodes.Add(nodeData);
@@ -226,6 +226,11 @@ public static class DSIOUtility
                 node.IsStartingNode(),
                 node.Speaker
             );
+            
+            Debug.Log("HUMEUR SAVEE = " + node.Humeur);
+
+            node.Saves.SaveHumeur(node.Humeur);
+            node.Saves.SetBubleType(node.BubleType);
 
             createdDialogues.Add(node.ID, dialogue);
 
@@ -360,8 +365,9 @@ public static class DSIOUtility
                 Debug.Log("Loading Node Dialogue Key = " + nodeData.GetDropDownKeyDialogue());
                 node.Saves.SetChoices(choices);
                 node.Saves.isMultipleChoice = nodeData.isMultipleChoice;
-           //     node.Saves.NextDialogueNodeID = nodeData.NextDialogueNodeID;
+                node.BubleType = nodeData.GetBubleType();
                 node.SetSpeaker(nodeData.Speaker);
+                node.SetHumeur(nodeData.GetHumeur());
                 node.Draw();
                 
 
