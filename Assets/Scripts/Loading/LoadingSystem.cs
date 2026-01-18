@@ -29,6 +29,10 @@ public class LoadingSystem : MonoBehaviour
     [Header("Loading Attributes")]
     [SerializeField] private Animator _loadingScreen;
     
+    /// <summary>
+    /// Fill the dropdown with the scenes in saved in your project settings.
+    /// MAKE SURE ALL THE SCENES ARE IN THE PROJECT SETTINGS
+    /// </summary>
     private void OnValidate()
     {
         int totalScenes = SceneManager.sceneCountInBuildSettings;
@@ -42,7 +46,9 @@ public class LoadingSystem : MonoBehaviour
         
     }
     
-
+    /// <summary>
+    /// Play Loading animation from the Controller Only if you are on single mode
+    /// </summary>
     private void Start()
     {
         if (LastLoadMode == LoadSceneMode.Single || LastLoadMode == null)
@@ -57,6 +63,7 @@ public class LoadingSystem : MonoBehaviour
         }
     }
 
+    
     private void LoadScene(string SceneToLoad, LoadSceneMode LoadSceneMode = LoadSceneMode.Single)
     {
         if (LoadSceneMode == LoadSceneMode.Single)
